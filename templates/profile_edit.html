@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Profile | INSURE AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7fb;
+            color: #102a43;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 60px auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 18px;
+            padding: 40px;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.08);
+        }
+
+        .brand {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .brand span {
+            color: #2878ff;
+        }
+
+        h1 {
+            margin-top: 30px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #718096;
+            margin-bottom: 30px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .field {
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #d5dce5;
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #2878ff;
+        }
+
+        input[readonly] {
+            background: #f1f4f8;
+            color: #718096;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        button,
+        .cancel {
+            padding: 14px 25px;
+            border-radius: 10px;
+            border: none;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        button {
+            background: linear-gradient(90deg, #2878ff, #703cff);
+            color: white;
+            flex: 1;
+        }
+
+        .cancel {
+            background: #edf2f7;
+            color: #334e68;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            background: #e8f5e9;
+            color: #237a3b;
+        }
+
+        @media (max-width: 650px) {
+            .row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .card {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <div class="brand">
+            🛡️ INSURE <span>AI</span>
+        </div>
+
+        <h1>Edit Profile</h1>
+
+        <div class="subtitle">
+            Update your personal information.
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="message">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+
+            <div class="row">
+
+                <div class="field">
+                    <label>First Name</label>
+
+                    <input
+                        type="text"
+                        name="first_name"
+                        value="{{ user.get('first_name', '') }}"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label>Last Name</label>
+
+                    <input
+                        type="text"
+                        name="last_name"
+                        value="{{ user.get('last_name', '') }}"
+                    >
+                </div>
+
+            </div>
+
+            <div class="field">
+
+                <label>Email</label>
+
+                <input
+                    type="email"
+                    value="{{ user.get('email', '') }}"
+                    readonly
+                >
+
+            </div>
+
+            <div class="field">
+
+                <label>Phone</label>
+
+                <input
+                    type="text"
+                    name="phone"
+                    value="{{ user.get('phone', '') }}"
+                    placeholder="Enter phone number"
+                >
+
+            </div>
+
+            <div class="buttons">
+
+                <a
+                    href="{{ url_for('profile') }}"
+                    class="cancel"
+                >
+                    Cancel
+                </a>
+
+                <button type="submit">
+                    Save Changes
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

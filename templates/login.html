@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Login | INSURE AI</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+
+            font-family: Arial, sans-serif;
+
+            min-height: 100vh;
+
+            background: #050b18;
+
+            color: white;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 30px;
+        }
+
+        .page {
+
+            width: 100%;
+
+            max-width: 1200px;
+
+            display: grid;
+
+            grid-template-columns: 1fr 450px;
+
+            gap: 60px;
+
+            align-items: center;
+        }
+
+        .left h1 {
+
+            font-size: 55px;
+
+            line-height: 1.05;
+
+            margin-bottom: 25px;
+        }
+
+        .left h1 span {
+
+            color: #22b8ff;
+        }
+
+        .left p {
+
+            color: #94a5bd;
+
+            font-size: 18px;
+
+            line-height: 1.7;
+
+            max-width: 600px;
+
+            margin-bottom: 30px;
+        }
+
+        .vehicle {
+
+            width: 100%;
+
+            max-width: 650px;
+
+            border-radius: 20px;
+
+            box-shadow:
+                0 25px 60px
+                rgba(0,0,0,.5);
+        }
+
+        .login-card {
+
+            background: white;
+
+            color: #172033;
+
+            border-radius: 22px;
+
+            padding: 40px;
+
+            box-shadow:
+                0 25px 70px
+                rgba(0,0,0,.35);
+        }
+
+        .logo {
+
+            text-align: center;
+
+            font-size: 25px;
+
+            font-weight: 800;
+
+            margin-bottom: 25px;
+        }
+
+        .logo span {
+
+            color: #2563eb;
+        }
+
+        .login-card h2 {
+
+            text-align: center;
+
+            font-size: 30px;
+
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+
+            text-align: center;
+
+            color: #667085;
+
+            margin-bottom: 30px;
+        }
+
+        label {
+
+            display: block;
+
+            font-weight: 700;
+
+            margin-bottom: 8px;
+
+            margin-top: 18px;
+        }
+
+        input {
+
+            width: 100%;
+
+            padding: 14px;
+
+            border:
+                1px solid #d0d5dd;
+
+            border-radius: 10px;
+
+            font-size: 15px;
+
+            outline: none;
+        }
+
+        input:focus {
+
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(37,99,235,.1);
+        }
+
+        .error {
+
+            background: #fee4e2;
+
+            color: #b42318;
+
+            padding: 12px;
+
+            border-radius: 8px;
+
+            margin-bottom: 15px;
+
+            text-align: center;
+        }
+
+        .login-button {
+
+            width: 100%;
+
+            margin-top: 25px;
+
+            padding: 15px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #1465ff,
+                    #7b3cff
+                );
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+        .login-button:hover {
+
+            opacity: .92;
+        }
+
+        .register {
+
+            text-align: center;
+
+            margin-top: 25px;
+
+            color: #667085;
+        }
+
+        .register a {
+
+            color: #2563eb;
+
+            font-weight: 700;
+
+            text-decoration: none;
+        }
+
+        .home {
+
+            display: block;
+
+            text-align: center;
+
+            margin-top: 15px;
+
+            color: #667085;
+
+            text-decoration: none;
+        }
+
+        @media(max-width: 850px) {
+
+            .page {
+
+                grid-template-columns: 1fr;
+            }
+
+            .left {
+
+                text-align: center;
+            }
+
+            .left h1 {
+
+                font-size: 42px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="page">
+
+
+    <div class="left">
+
+        <h1>
+
+            AI Vehicle Damage
+            <span>Assessment</span>
+
+        </h1>
+
+        <p>
+
+            Detect vehicle damage, estimate repair
+            costs and simplify insurance claim
+            assessment using Artificial Intelligence.
+
+        </p>
+
+        <img
+            src="{{ url_for('static', filename='images/vehicle-3d.png') }}"
+            class="vehicle"
+            alt="Vehicle Damage Assessment"
+        >
+
+    </div>
+
+
+    <div class="login-card">
+
+
+        <div class="logo">
+
+            🛡️ INSURE
+            <span>AI</span>
+
+        </div>
+
+
+        <h2>
+            Welcome Back
+        </h2>
+
+
+        <p class="subtitle">
+            Login to continue to INSURE AI
+        </p>
+
+
+        {% if error %}
+
+        <div class="error">
+            {{ error }}
+        </div>
+
+        {% endif %}
+
+
+        <form
+            method="POST"
+            action="{{ url_for('login') }}"
+        >
+
+
+            <label for="email">
+                Email
+            </label>
+
+            <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Enter your email"
+                required
+            >
+
+
+            <label for="password">
+                Password
+            </label>
+
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter your password"
+                required
+            >
+
+
+            <button
+                type="submit"
+                class="login-button"
+            >
+                Login →
+            </button>
+
+
+        </form>
+
+
+        <div class="register">
+
+            Don't have an account?
+
+            <a href="{{ url_for('register') }}">
+                Register
+            </a>
+
+        </div>
+
+
+        <a
+            href="{{ url_for('home') }}"
+            class="home"
+        >
+            ← Back to Home
+        </a>
+
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>

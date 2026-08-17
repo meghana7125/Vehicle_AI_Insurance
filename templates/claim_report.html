@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>INSURE AI | Claim Assessment Report</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #eef2f7;
+            color: #172033;
+            font-family: "Inter", sans-serif;
+        }
+
+        .topbar {
+            background: #0b1628;
+            color: white;
+            padding: 18px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #1976d2, #00a8ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .brand-text {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .brand-ai {
+            color: #42b8ff;
+        }
+
+        .report-label {
+            font-size: 13px;
+            color: #c5d0df;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .page {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px 50px;
+        }
+
+        .report-card {
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 8px 35px rgba(15, 23, 42, 0.08);
+            overflow: hidden;
+        }
+
+        .report-header {
+            padding: 35px 40px;
+            border-bottom: 1px solid #e5e9ef;
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+        }
+
+        .report-title {
+            font-size: 27px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .report-subtitle {
+            color: #667085;
+            font-size: 14px;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 14px;
+            border-radius: 30px;
+            background: #fff4e5;
+            color: #a65b00;
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 12px;
+        }
+
+        .meta-box {
+            min-width: 250px;
+            background: #f7f9fc;
+            border-radius: 10px;
+            padding: 17px 20px;
+        }
+
+        .meta-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 9px;
+            font-size: 13px;
+        }
+
+        .meta-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .meta-label {
+            color: #667085;
+        }
+
+        .meta-value {
+            font-weight: 700;
+            text-align: right;
+        }
+
+        .section {
+            padding: 30px 40px;
+            border-bottom: 1px solid #e8ecf2;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .7px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: #1976d2;
+            font-size: 19px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+
+        .info-item {
+            border: 1px solid #e4e8ee;
+            border-radius: 9px;
+            padding: 14px 16px;
+            background: #fbfcfe;
+        }
+
+        .info-label {
+            color: #718096;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .evidence-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+        }
+
+        .image-card {
+            border: 1px solid #e1e6ed;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #f8fafc;
+        }
+
+        .image-title {
+            padding: 13px 16px;
+            background: #f1f4f8;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .vehicle-image {
+            width: 100%;
+            height: 330px;
+            object-fit: contain;
+            background: #edf1f5;
+            display: block;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .damage-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px;
+        }
+
+        .damage-table th {
+            background: #0f1c31;
+            color: white;
+            padding: 13px 14px;
+            text-align: left;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+        }
+
+        .damage-table td {
+            padding: 14px;
+            border-bottom: 1px solid #e5e9ef;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .damage-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .severity {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .severity-low {
+            background: #e8f7ee;
+            color: #16734a;
+        }
+
+        .severity-moderate {
+            background: #fff5d9;
+            color: #956900;
+        }
+
+        .severity-high {
+            background: #ffe9e9;
+            color: #b42318;
+        }
+
+        .severity-critical {
+            background: #eadcff;
+            color: #6827a3;
+        }
+
+        .confidence {
+            font-weight: 700;
+        }
+
+        .total-box {
+            margin-top: 22px;
+            margin-left: auto;
+            max-width: 360px;
+            border: 1px solid #dbe2eb;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .total-title {
+            padding: 11px 16px;
+            background: #f4f6f9;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .total-value {
+            padding: 18px 16px;
+            font-size: 28px;
+            font-weight: 800;
+            color: #0b6b3a;
+        }
+
+        .severity-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .overall-severity {
+            border: 1px solid #e2e7ee;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .severity-big {
+            font-size: 30px;
+            font-weight: 800;
+            margin: 10px 0;
+        }
+
+        .severity-note {
+            font-size: 12px;
+            color: #718096;
+        }
+
+        .summary {
+            background: #f7f9fc;
+            border-left: 4px solid #1976d2;
+            padding: 20px;
+            border-radius: 7px;
+            color: #4b5563;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .recommendation {
+            border: 1px solid #f1d49c;
+            background: #fffaf0;
+            border-radius: 12px;
+            padding: 22px;
+        }
+
+        .recommendation-title {
+            color: #8a5a00;
+            font-size: 15px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .recommendation-text {
+            color: #5f4a22;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .document-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .document-item {
+            border: 1px solid #e1e6ed;
+            padding: 13px 15px;
+            border-radius: 8px;
+            font-size: 13px;
+            background: #fafbfc;
+        }
+
+        .document-item i {
+            margin-right: 8px;
+            color: #667085;
+        }
+
+        .technical-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .technical-card {
+            background: #f7f9fc;
+            border-radius: 9px;
+            padding: 15px;
+        }
+
+        .technical-label {
+            color: #718096;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .technical-value {
+            margin-top: 5px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .officer-box {
+            border: 1px solid #dce2e9;
+            border-radius: 12px;
+            padding: 22px;
+        }
+
+        .signature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            margin-top: 50px;
+        }
+
+        .signature-line {
+            border-top: 1px solid #7b8491;
+            padding-top: 8px;
+            color: #667085;
+            font-size: 12px;
+        }
+
+        .disclaimer {
+            background: #f5f6f8;
+            padding: 22px 40px;
+            color: #667085;
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 25px 0;
+        }
+
+        .btn-report {
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-print {
+            background: #0f1c31;
+            color: white;
+        }
+
+        .btn-dashboard {
+            background: white;
+            color: #172033;
+            border: 1px solid #d8dee7;
+        }
+
+        @media (max-width: 800px) {
+
+            .report-header {
+                flex-direction: column;
+            }
+
+            .info-grid,
+            .evidence-grid,
+            .severity-panel,
+            .document-list,
+            .technical-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 25px 20px;
+            }
+
+            .topbar {
+                padding: 15px 20px;
+            }
+
+            .signature-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+
+        @media print {
+
+            body {
+                background: white;
+            }
+
+            .actions,
+            .topbar {
+                display: none !important;
+            }
+
+            .page {
+                margin: 0;
+                max-width: none;
+                padding: 0;
+            }
+
+            .report-card {
+                box-shadow: none;
+                border-radius: 0;
+            }
+
+            .section {
+                break-inside: avoid;
+            }
+
+            .report-header {
+                padding-top: 15px;
+            }
+
+            .vehicle-image {
+                height: 280px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<div class="topbar">
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            <i class="bi bi-shield-check"></i>
+        </div>
+
+        <div class="brand-text">
+            INSURE <span class="brand-ai">AI</span>
+        </div>
+
+    </div>
+
+    <div class="report-label">
+        AI-Powered Insurance Assessment
+    </div>
+
+</div>
+
+
+<div class="page">
+
+    <!-- ACTION BUTTONS -->
+
+    <div class="actions">
+
+        <button
+            class="btn-report btn-print"
+            onclick="window.print()"
+        >
+            <i class="bi bi-printer"></i>
+            Print / Save PDF
+        </button>
+
+        <a
+            href="{{ url_for('dashboard') }}"
+            class="btn-report btn-dashboard"
+        >
+            <i class="bi bi-arrow-left"></i>
+            Back to Dashboard
+        </a>
+
+    </div>
+
+
+    <div class="report-card">
+
+
+        <!-- REPORT HEADER -->
+
+        <div class="report-header">
+
+            <div>
+
+                <div class="report-title">
+                    Vehicle Insurance Claim
+                    <br>
+                    Preliminary Damage Assessment
+                </div>
+
+                <div class="report-subtitle">
+                    AI-assisted vehicle damage assessment report
+                </div>
+
+                <div class="status">
+                    <i class="bi bi-hourglass-split"></i>
+                    AI PRELIMINARY ASSESSMENT
+                </div>
+
+            </div>
+
+
+            <div class="meta-box">
+
+                <div class="meta-row">
+                    <span class="meta-label">
+                        Report ID
+                    </span>
+
+                    <span class="meta-value">
+                        {{ report_id }}
+                    </span>
+                </div>
+
+                <div class="meta-row">
+                    <span class="meta-label">
+                        Assessment Date
+                    </span>
+
+                    <span class="meta-value">
+                        {{ assessment_date }}
+                    </span>
+                </div>
+
+                <div class="meta-row">
+                    <span class="meta-label">
+                        Assessment Type
+                    </span>
+
+                    <span class="meta-value">
+                        AI Image Analysis
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- CLAIM INFORMATION -->
+
+        <div class="section">
+
+            <div class="section-title">
+                <i class="bi bi-file-earmark-text"></i>
+                Claim Information
+            </div>
+
+            <div class="info-grid">
+
+                <div class="info-item">
+                    <div class="info-label">
+                        Claim ID
+                    </div>
+
+                    <div class="info-value">
+                        {{ claim_id }}
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">
+                        Policy Number
+                    </div>
+
+                    <div class="info-value">
+                        {{ policy_number }}
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">
+                        Customer Name
+                    </div>
+
+                    <div class="info-value">
+                        {{ customer_name }}
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">
+                        Assessment Method
+                    </div>
+
+                    <div class="info-value">
+                        Computer Vision Analysis
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- VEHICLE INFORMATION -->
+
+        <div class="section">
+
+            <div class="section-title">
+                <i class="bi bi-car-front"></i>
+                Vehicle Information
+            </div>
+
+            <div class="info-grid">
+
+                <div class="info-item">
+                    <div class="info-label">
+                        Registration Number
+                    </div>
+
+                    <div class="info-value">
+                        {{ vehicle_number }}
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">
+                        Vehicle Make
+                    </div>
+
+                    <div class="info-value">
+                        {{ vehicle_make }}
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">
+                        Vehicle Model
+                    </div>
+
+                    <div class="info-value">
+                        {{ vehicle_model }}
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">
+                        Vehicle Year
+                    </div>
+
+                    <div class="info-value">
+                        {{ vehicle_year }}
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- IMAGE EVIDENCE -->
+
+        <div class="section">
+
+            <div class="section-title">
+                <i class="bi bi-images"></i>
+                Image Evidence
+            </div>
+
+            <div class="evidence-grid">
+
+                <div class="image-card">
+
+                    <div class="image-title">
+                        Original Submitted Image
+                    </div>
+
+                    {% if original_image %}
+
+                    <img
+                        src="{{ url_for('static', filename=original_image) }}"
+                        class="vehicle-image"
+                        alt="Original vehicle image"
+                    >
+
+                    {% else %}
+
+                    <div
+                        class="vehicle-image d-flex align-items-center justify-content-center text-muted"
+                    >
+                        Image not available
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="image-card">
+
+                    <div class="image-title">
+                        AI Damage Detection
+                    </div>
+
+                    {% if annotated_image %}
+
+                    <img
+                        src="{{ url_for('static', filename=annotated_image) }}"
+                        class="vehicle-image"
+                        alt="AI annotated vehicle image"
+                    >
+
+                    {% else %}
+
+                    <div
+                        class="vehicle-image d-flex align-items-center justify-content-center text-muted"
+                    >
+                        AI annotated image not available
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- DAMAGE ASSESSMENT -->
+
+        <div class="section">
+
+            <div class="section-title">
+                <i class="bi bi-search"></i>
+                AI Damage Assessment
+            </div>
+
+            <div class="table-container">
+
+                <table class="damage-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>#</th>
+                            <th>Damaged Component</th>
+                            <th>Severity</th>
+                            <th>Confidence</th>
+                            <th>Estimated Repair</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% if damages %}
+
+                            {% for damage in damages %}
+
+                            <tr>
+
+                                <td>
+                                    {{ "%02d" | format(loop.index) }}
+                                </td>
+
+                                <td>
+                                    <strong>
+                                        {{ damage.component }}
+                                    </strong>
+                                </td>
+
+                                <td>
+
+                                    <span class="severity severity-{{ damage.severity|lower }}">
+                                        {{ damage.severity }}
+                                    </span>
+
+                                </td>
+
+                                <td class="confidence">
+                                    {{ damage.confidence }}%
+                                </td>
+
+                                <td>
+                                    ₹{{ "{:,.0f}".format(damage.cost) }}
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        {% else %}
+
+                            <tr>
+
+                                <td colspan="5" class="text-center text-muted py-4">
+                                    No damage assessment data available.
+                                </td>
+
+                            </tr>
+
+                        {% endif %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <div class="total-box">
+
+                <div class="total-title">
+                    Total Estimated Repair Cost
+                </div>
+
+                <div class="total-value">
+                    ₹{{ "{:,.0f}".format(total_cost) }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SEVERITY -->
+
+        <div class="section">
+
+            <div class="section-title">
+                <i class="bi bi-speedometer2"></i>
+                Overall Damage Severity
+            </div>
+
+            <div class="severity-panel">
+
+                <div class="overall-severity">
+
+                    <div class="severity-note">
+                        AI CLASSIFICATION
+                    </div>
+
+                    <div class="severity-big">
+                        {{ overall_severity }}
+                    </div>
+
+                    <div class="severity-note">
+                        Based on detected vehicle damage
+                    </div>
+
+                </div>
+
+
+                <div class="overall-severity">
+
+                    <div class="severity-note">
+                        AI ASSESSMENT CONFIDENCE
+                    </div>
+
+                    <div class="severity-big">
+                        {{ overall_confidence }}%
+                    </div>
+
+                    <div class="severity-note">
+                        Detection confidence across analyzed evidence
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SUMMARY -->
+
+        <div class="section">
+
+            <div class="section-title">
+                <i class="bi bi-file-text"></i>
+                Assessment Summary
+            </div>
+
+            <div class="summary">
+
+                The submitted vehicle image evidence was analyzed using
+                the INSURE AI computer-vision damage assessment system.
+                Visible vehicle damage was identified from the available
+                image evidence. The detected components, confidence scores,
+                severity classification and estimated repair costs are
+                presented in this report for preliminary insurance review.
+
+            </div>
+
+        </div>
+
+
+        <!-- RECOMMENDATION -->
+
+        <div class="section">
+
+            <div class="section-title">
+                <i class="bi bi-clipboard-check"></i>
+                Claim Review Recommendation
+            </div>
+
+            <div class="recommendation">
+
+                <div class="recommendation-title">
+                    <i class="bi bi-exclamation-circle"></i>
+                    REQUIRES INSURANCE OFFICER REVIEW
+                </div>
+
+                <div class="recommendation-text">
+
+                    The AI-generated assessment should be treated as a
+                    preliminary evaluation. The detected damage and
+                    estimated repair cost should be verified against the
+                    original incident evidence, policy coverage,
+                    supporting documentation and applicable claim
+                    processing procedures before any final decision is made.
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- DOCUMENT CHECKLIST -->
+
+        <div class="section">
+
+            <div class="section-title">
+                <i class="bi bi-folder-check"></i>
+                Supporting Document Checklist
+            </div>
+
+            <div class="document-list">
+
+                <div class="document-item">
+                    <i class="bi bi-square"></i>
+                    Vehicle Registration Certificate
+                </div>
+
+                <div class="document-item">
+                    <i class="bi bi-square"></i>
+                    Insurance Policy Document
+                </div>
+
+                <div class="document-item">
+                    <i class="bi bi-square"></i>
+                    Driving License
+                </div>
+
+                <div class="document-item">
+                    <i class="bi bi-square"></i>
+                    Incident / FIR Report if applicable
+                </div>
+
+                <div class="document-item">
+                    <i class="bi bi-square"></i>
+                    Additional Vehicle Images
+                </div>
+
+                <div class="document-item">
+                    <i class="bi bi-square"></i>
+                    Repair Estimate / Garage Quotation
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- TECHNICAL INFORMATION -->
+
+        <div class="section">
+
+            <div class="section-title">
+                <i class="bi bi-cpu"></i>
+                AI Assessment Information
+            </div>
+
+            <div class="technical-grid">
+
+                <div class="technical-card">
+
+                    <div class="technical-label">
+                        Detection Model
+                    </div>
+
+                    <div class="technical-value">
+                        YOLO
+                    </div>
+
+                </div>
+
+                <div class="technical-card">
+
+                    <div class="technical-label">
+                        Analysis Type
+                    </div>
+
+                    <div class="technical-value">
+                        Vehicle Damage Detection
+                    </div>
+
+                </div>
+
+                <div class="technical-card">
+
+                    <div class="technical-label">
+                        Assessment Type
+                    </div>
+
+                    <div class="technical-value">
+                        Preliminary
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- OFFICER REVIEW -->
+
+        <div class="section">
+
+            <div class="section-title">
+                <i class="bi bi-person-check"></i>
+                Insurance Officer Review
+            </div>
+
+            <div class="officer-box">
+
+                <div class="info-grid">
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Officer Name
+                        </div>
+
+                        <div class="info-value">
+                            __________________________________
+                        </div>
+
+                    </div>
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Review Status
+                        </div>
+
+                        <div class="info-value">
+                            ☐ Verified
+                            &nbsp;&nbsp;
+                            ☐ Additional Evidence Required
+                            &nbsp;&nbsp;
+                            ☐ Reassessment Required
+                        </div>
+
+                    </div>
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Approved Repair Amount
+                        </div>
+
+                        <div class="info-value">
+                            ₹ ______________________________
+                        </div>
+
+                    </div>
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Review Date
+                        </div>
+
+                        <div class="info-value">
+                            ______________________________
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div style="margin-top:25px;">
+
+                    <div class="info-label">
+                        Officer Remarks
+                    </div>
+
+                    <div
+                        style="
+                        height:100px;
+                        border:1px solid #dce2e9;
+                        border-radius:8px;
+                        margin-top:8px;
+                        "
+                    ></div>
+
+                </div>
+
+
+                <div class="signature-grid">
+
+                    <div class="signature-line">
+                        Insurance Officer Signature
+                    </div>
+
+                    <div class="signature-line">
+                        Authorized Stamp / Date
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- DISCLAIMER -->
+
+        <div class="disclaimer">
+
+            <strong>Important Disclaimer:</strong>
+
+            This document represents an AI-assisted preliminary vehicle
+            damage assessment and repair-cost estimate. It does not
+            constitute a final insurance claim decision, liability
+            determination, settlement approval or payment authorization.
+            Final claim processing is subject to verification by an
+            authorized insurance officer, applicable policy terms,
+            supporting documentation and the insurer's established
+            procedures.
+
+        </div>
+
+
+    </div>
+
+</div>
+
+</body>
+</html>

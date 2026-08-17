@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>INSURE AI | Vehicle Damage Assessment</title>
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Inter", sans-serif;
+            background: #f7fafc;
+            color: #172033;
+        }
+
+        /* NAVBAR */
+
+        nav {
+            height: 76px;
+            background: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 7%;
+
+            border-bottom: 1px solid #e8edf2;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            font-size: 24px;
+            font-weight: 800;
+
+            color: #0f766e;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+
+            border-radius: 12px;
+
+            background: #0f766e;
+
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        nav ul {
+            list-style: none;
+
+            display: flex;
+            align-items: center;
+
+            gap: 34px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #374151;
+
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            color: #0f766e;
+        }
+
+        .login-btn {
+            background: #0f766e;
+            color: white !important;
+
+            padding: 13px 24px;
+
+            border-radius: 9px;
+
+            font-weight: 600;
+        }
+
+        /* HERO */
+
+        .hero {
+            min-height: calc(100vh - 76px);
+
+            padding: 80px 7%;
+
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 70px;
+
+            align-items: center;
+
+            background:
+                radial-gradient(
+                    circle at 80% 20%,
+                    rgba(15,118,110,0.08),
+                    transparent 35%
+                ),
+                #f7fafc;
+        }
+
+        .hero-content {
+            max-width: 650px;
+        }
+
+        .badge {
+            display: inline-block;
+
+            padding: 8px 15px;
+
+            border-radius: 30px;
+
+            background: #dff6f2;
+
+            color: #0f766e;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            font-size: clamp(44px, 5vw, 70px);
+
+            line-height: 1.05;
+
+            letter-spacing: -2px;
+
+            margin-bottom: 25px;
+        }
+
+        h1 span {
+            color: #0f766e;
+        }
+
+        .description {
+            color: #667085;
+
+            font-size: 18px;
+
+            line-height: 1.8;
+
+            max-width: 600px;
+
+            margin-bottom: 35px;
+        }
+
+        .buttons {
+            display: flex;
+
+            gap: 15px;
+
+            flex-wrap: wrap;
+        }
+
+        .primary-btn,
+        .secondary-btn {
+            text-decoration: none;
+
+            padding: 15px 25px;
+
+            border-radius: 10px;
+
+            font-weight: 600;
+
+            transition: 0.2s;
+        }
+
+        .primary-btn {
+            background: #0f766e;
+
+            color: white;
+        }
+
+        .primary-btn:hover {
+            background: #0b5f59;
+        }
+
+        .secondary-btn {
+            background: white;
+
+            border: 1px solid #cbd5e1;
+
+            color: #334155;
+        }
+
+        .secondary-btn:hover {
+            border-color: #0f766e;
+
+            color: #0f766e;
+        }
+
+        /* AI VISUAL */
+
+        .visual {
+            position: relative;
+
+            min-height: 460px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+        }
+
+        .car-card {
+            width: 100%;
+
+            max-width: 560px;
+
+            background: white;
+
+            border-radius: 24px;
+
+            padding: 28px;
+
+            box-shadow:
+                0 25px 60px rgba(15,23,42,0.12);
+
+            border: 1px solid #e5e7eb;
+
+            position: relative;
+
+            overflow: hidden;
+        }
+
+        .car-top {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 22px;
+        }
+
+        .car-title {
+            font-size: 18px;
+
+            font-weight: 700;
+        }
+
+        .status {
+            padding: 7px 12px;
+
+            border-radius: 20px;
+
+            background: #dcfce7;
+
+            color: #166534;
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+        .vehicle-box {
+            height: 250px;
+
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #172033,
+                    #344054
+                );
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            position: relative;
+
+            overflow: hidden;
+        }
+
+        .vehicle {
+            font-size: 110px;
+
+            filter: grayscale(1);
+
+            opacity: 0.95;
+        }
+
+        .scan {
+            position: absolute;
+
+            left: 0;
+
+            right: 0;
+
+            height: 3px;
+
+            background: #22c55e;
+
+            box-shadow:
+                0 0 18px #22c55e;
+
+            animation: scan 3s infinite;
+        }
+
+        @keyframes scan {
+
+            0% {
+                top: 0;
+            }
+
+            50% {
+                top: 100%;
+            }
+
+            100% {
+                top: 0;
+            }
+        }
+
+        .damage-point {
+            position: absolute;
+
+            width: 17px;
+            height: 17px;
+
+            border-radius: 50%;
+
+            background: #ef4444;
+
+            border: 3px solid white;
+
+            box-shadow:
+                0 0 0 6px rgba(239,68,68,0.25);
+        }
+
+        .point-one {
+            top: 38%;
+            left: 34%;
+        }
+
+        .point-two {
+            top: 53%;
+            right: 29%;
+        }
+
+        .point-three {
+            bottom: 28%;
+            left: 50%;
+        }
+
+        .analysis {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 12px;
+
+            margin-top: 18px;
+        }
+
+        .analysis-card {
+            background: #f8fafc;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 12px;
+
+            padding: 15px;
+        }
+
+        .analysis-card small {
+            display: block;
+
+            color: #64748b;
+
+            font-size: 11px;
+
+            margin-bottom: 5px;
+        }
+
+        .analysis-card strong {
+            font-size: 17px;
+        }
+
+        .danger {
+            color: #dc2626;
+        }
+
+        .green {
+            color: #15803d;
+        }
+
+        /* FEATURES */
+
+        .features {
+            padding: 70px 7%;
+
+            background: white;
+        }
+
+        .section-title {
+            text-align: center;
+
+            margin-bottom: 45px;
+        }
+
+        .section-title h2 {
+            font-size: 35px;
+
+            margin-bottom: 10px;
+        }
+
+        .section-title p {
+            color: #64748b;
+        }
+
+        .feature-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 20px;
+        }
+
+        .feature {
+            padding: 28px;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 16px;
+
+            background: white;
+
+            transition: 0.2s;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+
+            box-shadow:
+                0 15px 35px rgba(15,23,42,0.08);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+
+            border-radius: 12px;
+
+            background: #dff6f2;
+
+            color: #0f766e;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 22px;
+
+            margin-bottom: 18px;
+        }
+
+        .feature h3 {
+            font-size: 17px;
+
+            margin-bottom: 9px;
+        }
+
+        .feature p {
+            color: #64748b;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+        }
+
+        /* FOOTER */
+
+        footer {
+            padding: 25px 7%;
+
+            background: #172033;
+
+            color: #cbd5e1;
+
+            text-align: center;
+
+            font-size: 13px;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 900px) {
+
+            nav ul {
+                gap: 12px;
+            }
+
+            .hero {
+                grid-template-columns: 1fr;
+
+                padding-top: 50px;
+            }
+
+            .feature-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            nav {
+                padding: 0 5%;
+            }
+
+            nav ul li:not(:last-child) {
+                display: none;
+            }
+
+            .hero {
+                padding: 45px 5%;
+            }
+
+            .analysis {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<nav>
+
+    <div class="logo">
+
+        <div class="logo-icon">
+            IA
+        </div>
+
+        INSURE AI
+
+    </div>
+
+    <ul>
+
+        <li>
+            <a href="/">Home</a>
+        </li>
+
+        <li>
+            <a href="#features">Features</a>
+        </li>
+
+        <li>
+            <a href="/assessment">Assessment</a>
+        </li>
+
+        <li>
+            <a href="/claims">Claims</a>
+        </li>
+
+        <li>
+            <a href="/login" class="login-btn">
+                Login
+            </a>
+        </li>
+
+    </ul>
+
+</nav>
+
+
+<!-- HERO -->
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <div class="badge">
+            AI-POWERED VEHICLE INSURANCE
+        </div>
+
+        <h1>
+            Intelligent Vehicle
+            <span>Damage Assessment</span>
+        </h1>
+
+        <p class="description">
+
+            INSURE AI uses computer vision and YOLO-based
+            artificial intelligence to detect vehicle damage,
+            identify affected vehicle parts, estimate severity,
+            and simplify insurance claim processing.
+
+        </p>
+
+        <div class="buttons">
+
+            <a href="/assessment"
+               class="primary-btn">
+
+                Start AI Assessment →
+
+            </a>
+
+            <a href="#features"
+               class="secondary-btn">
+
+                Explore Features
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- AI VISUAL -->
+
+    <div class="visual">
+
+        <div class="car-card">
+
+            <div class="car-top">
+
+                <div class="car-title">
+                    AI Vehicle Scanner
+                </div>
+
+                <div class="status">
+                    AI READY
+                </div>
+
+            </div>
+
+            <div class="vehicle-box">
+
+                <div class="vehicle">
+                    🚗
+                </div>
+
+                <div class="scan"></div>
+
+                <div class="damage-point point-one"></div>
+
+                <div class="damage-point point-two"></div>
+
+                <div class="damage-point point-three"></div>
+
+            </div>
+
+            <div class="analysis">
+
+                <div class="analysis-card">
+
+                    <small>
+                        AI Detection
+                    </small>
+
+                    <strong class="danger">
+                        DAMAGE
+                    </strong>
+
+                </div>
+
+                <div class="analysis-card">
+
+                    <small>
+                        Confidence
+                    </small>
+
+                    <strong>
+                        94.8%
+                    </strong>
+
+                </div>
+
+                <div class="analysis-card">
+
+                    <small>
+                        Assessment
+                    </small>
+
+                    <strong class="green">
+                        READY
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- FEATURES -->
+
+<section class="features"
+         id="features">
+
+    <div class="section-title">
+
+        <h2>
+            AI-Powered Insurance Workflow
+        </h2>
+
+        <p>
+            From vehicle image to insurance claim
+            in a simple automated workflow.
+        </p>
+
+    </div>
+
+
+    <div class="feature-grid">
+
+        <div class="feature">
+
+            <div class="feature-icon">
+                📷
+            </div>
+
+            <h3>
+                Vehicle Image Upload
+            </h3>
+
+            <p>
+                Upload a vehicle image for
+                automatic AI inspection.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-icon">
+                🤖
+            </div>
+
+            <h3>
+                YOLO Detection
+            </h3>
+
+            <p>
+                YOLO computer vision identifies
+                damaged vehicle components.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-icon">
+                📊
+            </div>
+
+            <h3>
+                Damage Assessment
+            </h3>
+
+            <p>
+                Analyze confidence and estimate
+                damage severity and repair cost.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-icon">
+                📄
+            </div>
+
+            <h3>
+                Claim Generation
+            </h3>
+
+            <p>
+                Generate an insurance claim using
+                the AI assessment results.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<footer>
+
+    © 2026 INSURE AI —
+    AI Powered Vehicle Damage Assessment
+    & Insurance Claim Automation
+
+</footer>
+
+</body>
+</html>

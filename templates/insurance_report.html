@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INSURE AI | Vehicle Damage Assessment Report</title>
+<style>
+@page{size:A4;margin:10mm}
+*{box-sizing:border-box}
+body{margin:0;background:#eef2f5;color:#17212b;font-family:Arial,Helvetica,sans-serif;font-size:11px}
+.page{width:210mm;min-height:297mm;margin:18px auto;background:#fff;box-shadow:0 8px 30px rgba(18,34,52,.13);padding-bottom:24px}
+.header{height:108px;position:relative;overflow:hidden;background:#fff}
+.header:before{content:"";position:absolute;left:0;top:0;width:72%;height:100%;background:#167f88;clip-path:polygon(0 0,100% 0,93% 100%,0 100%)}
+.header-content{position:relative;padding:26px 36px;color:#fff}
+.header h1{margin:0;font-size:27px;line-height:1.12;font-weight:800;letter-spacing:-.4px}
+.header p{margin:8px 0 0;font-size:10px;letter-spacing:1.3px;font-weight:700;text-transform:uppercase;opacity:.92}
+.logo{position:absolute;right:34px;top:24px;color:#111;text-align:right;font-weight:800;font-size:13px;line-height:1.1}
+.logo .shield{font-size:25px;display:inline-block;vertical-align:middle;margin-right:7px;color:#167f88}
+.logo small{display:block;margin-top:5px;font-size:8px;color:#66717a;letter-spacing:.7px}
+.meta{display:flex;justify-content:space-between;padding:10px 36px 4px;color:#59656e;font-size:9px}
+.meta strong{color:#17212b}
+.section{margin:13px 36px 0}
+.section-title{display:flex;align-items:center;gap:9px;font-size:16px;font-weight:800;margin-bottom:8px}
+.bar{width:44px;height:22px;display:inline-block;background:#356ff2}
+.bar.teal{background:#43aeb4}.bar.orange{background:#ed742f}.bar.pink{background:#df4f70}.bar.green{background:#2c9a6d}.bar.purple{background:#6754ed}.bar.red{background:#e4545f}
+.table{width:100%;border-collapse:collapse;table-layout:fixed}
+.table td,.table th{border:1px solid #c8d0d8;padding:7px 9px;vertical-align:middle}
+.table th{background:#f3f6f8;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:.4px;color:#59656e}
+.label{font-weight:800;width:19%;background:#fafbfc;color:#303a42}
+.value{width:31%;font-weight:600;color:#1b2730;min-height:27px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.box{border:1px solid #c8d0d8;padding:11px;background:#fff}
+.box-title{font-size:11px;font-weight:800;margin-bottom:8px;color:#1b2730}
+.check-grid{display:grid;grid-template-columns:1fr 1fr;border:1px solid #c8d0d8}
+.check{padding:7px 8px;border-right:1px solid #c8d0d8;border-bottom:1px solid #c8d0d8;display:flex;align-items:center;gap:7px;min-height:29px}
+.check:nth-child(even){border-right:0}.check:nth-last-child(-n+2){border-bottom:0}
+.dot{width:11px;height:11px;border:1px solid #8c969d;border-radius:50%;display:inline-block;flex:0 0 auto}
+.check.active{font-weight:800;background:#f2f8f9}.check.active .dot{border:3px solid #167f88}
+.ai-card{border:1px solid #b8cdd0;background:#f6fbfb;padding:13px}
+.ai-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.metric{border:1px solid #cbd6dc;background:#fff;padding:10px}.metric small{display:block;font-size:8px;color:#6d7880;text-transform:uppercase;letter-spacing:.5px;font-weight:800;margin-bottom:5px}.metric strong{font-size:15px}
+.sev-high{color:#d64a4a}.sev-medium{color:#e57b22}.sev-low{color:#168566}.confidence{height:7px;background:#e2e8ed;border-radius:10px;overflow:hidden;margin-top:7px}.confidence span{display:block;height:100%;background:#356ff2;border-radius:10px}
+.images{display:grid;grid-template-columns:1fr 1fr;gap:12px}.img-box{border:1px solid #c8d0d8;padding:7px;background:#fff}.img-box img{display:block;width:100%;height:190px;object-fit:contain;background:#eef2f5}.caption{text-align:center;font-weight:800;font-size:9px;margin-top:6px;color:#53606a}
+.detect{width:100%;border-collapse:collapse}.detect td{border:1px solid #d0d7dc;padding:7px 8px}.detect .name{font-weight:800}.pill{display:inline-block;padding:3px 7px;border-radius:10px;background:#edf3ff;color:#356ff2;font-weight:800;font-size:9px}.notes{min-height:72px;border:1px solid #c8d0d8;background:#fbfcfd;padding:10px;line-height:1.6}
+.summary{background:#f1f6ff;border-left:5px solid #356ff2;padding:12px 14px;line-height:1.65}
+.signatures{display:grid;grid-template-columns:1fr 1fr;gap:50px;margin-top:25px}.sig{padding-top:22px;border-bottom:1px solid #7e8990;font-size:9px;color:#4d5961}
+.footer{margin:20px 36px 0;padding-top:9px;border-top:1px solid #d2d8dd;display:flex;justify-content:space-between;color:#74808a;font-size:8px}
+.print-btn{position:fixed;right:20px;bottom:20px;border:0;background:#17212b;color:#fff;border-radius:8px;padding:10px 14px;font-weight:800;cursor:pointer}
+@media print{body{background:#fff}.page{margin:0;box-shadow:none;width:210mm}.print-btn{display:none}}
+@media(max-width:800px){.page{width:100%;margin:0}.section{margin-left:20px;margin-right:20px}.meta{padding-left:20px;padding-right:20px}.footer{margin-left:20px;margin-right:20px}.header-content{padding-left:20px}.logo{right:20px}.two-col,.images{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="page">
+<header class="header">
+  <div class="header-content">
+    <h1>Vehicle Damage<br>Assessment Report</h1>
+    <p>AI-powered insurance claim assessment</p>
+  </div>
+  <div class="logo"><span class="shield">⬡</span> INSURE AI<small>Intelligent · Accurate · Automated</small></div>
+</header>
+
+<div class="meta">
+  <div>REPORT TYPE: <strong>AI VEHICLE DAMAGE ASSESSMENT</strong></div>
+  <div>ASSESSMENT ID: <strong>{{ claim.get('assessment_id','—') }}</strong></div>
+  <div>DATE: <strong>{{ claim.get('created_at','—') }}</strong></div>
+</div>
+
+<section class="section">
+ <div class="section-title"><span class="bar purple"></span>Personal Information</div>
+ <table class="table"><tr><td class="label">Name:</td><td class="value">{{ claim.get('first_name','') }} {{ claim.get('last_name','') }}</td><td class="label">Email:</td><td class="value">{{ claim.get('email', claim.get('user_email','—')) }}</td></tr>
+ <tr><td class="label">Phone Number:</td><td class="value">{{ claim.get('phone','Not Provided') }}</td><td class="label">Claim ID:</td><td class="value">{{ claim.get('id','—') }}</td></tr>
+ <tr><td class="label">Address:</td><td class="value" colspan="3">{{ claim.get('address','Not Provided') }}{% if claim.get('city') %}, {{ claim.get('city') }}{% endif %}{% if claim.get('state') %}, {{ claim.get('state') }}{% endif %}{% if claim.get('pincode') %} - {{ claim.get('pincode') }}{% endif %}</td></tr></table>
+</section>
+
+<section class="section">
+ <div class="section-title"><span class="bar teal"></span>Vehicle Information</div>
+ <table class="table"><tr><td class="label">Vehicle Make / Model:</td><td class="value">{{ claim.get('vehicle','Not Provided') }}</td><td class="label">Registration Number:</td><td class="value">{{ claim.get('vehicle_number','—') }}</td></tr>
+ <tr><td class="label">Assessment Status:</td><td class="value">{{ claim.get('status','Under Review') }}</td><td class="label">Damage Status:</td><td class="value"><strong>{{ claim.get('status','Damage Detected') if claim.get('damage_detected') else 'No Damage Detected' }}</strong></td></tr></table>
+</section>
+
+<section class="section">
+ <div class="section-title"><span class="bar orange"></span>Accident Information</div>
+ <table class="table"><tr><td class="label">Accident Date:</td><td class="value">{{ claim.get('accident_date','—') }}</td><td class="label">Accident Location:</td><td class="value">{{ claim.get('accident_location','—') }}</td></tr>
+ <tr><td class="label">Description:</td><td colspan="3">{{ claim.get('accident_description','Not Provided') }}</td></tr></table>
+</section>
+
+<section class="section">
+ <div class="section-title"><span class="bar red"></span>AI Damage Assessment</div>
+ <div class="ai-card">
+  <div class="ai-grid">
+   <div class="metric"><small>AI Confidence</small><strong>{{ claim.get('confidence',0) }}%</strong><div class="confidence"><span style="width:{{ claim.get('confidence',0) }}%"></span></div></div>
+   <div class="metric"><small>Severity Level</small><strong class="{% if claim.get('severity') == 'High' %}sev-high{% elif claim.get('severity') == 'Medium' %}sev-medium{% else %}sev-low{% endif %}">{{ claim.get('severity','None') }}</strong></div>
+   <div class="metric"><small>Estimated Repair Cost</small><strong>{{ claim.get('repair_cost','₹0') }}</strong></div>
+   <div class="metric"><small>Detected Parts</small><strong>{{ claim.get('detections',[])|length }}</strong></div>
+  </div>
+ </div>
+</section>
+
+<section class="section">
+ <div class="section-title"><span class="bar green"></span>Damage Evidence</div>
+ <div class="images">
+  {% if claim.get('image_url') %}<div class="img-box"><img src="{{ claim.get('image_url') }}" alt="Original vehicle image"><div class="caption">Original Submitted Image</div></div>{% endif %}
+  {% if claim.get('annotated_image_url') %}<div class="img-box"><img src="{{ claim.get('annotated_image_url') }}" alt="AI annotated vehicle image"><div class="caption">AI Annotated Detection Image</div></div>{% endif %}
+ </div>
+</section>
+
+<section class="section">
+ <div class="section-title"><span class="bar blue"></span>Detected Vehicle Damage / Regions</div>
+ {% if claim.get('detections') %}
+ <table class="detect"><tr><th>Vehicle Part</th><th>AI Confidence</th><th>Assessment</th></tr>
+ {% for d in claim.get('detections',[]) %}<tr><td class="name">{{ d.get('class_name',d.get('name','Vehicle Part')) }}</td><td><span class="pill">{{ d.get('confidence_percent',d.get('confidence',0)) }}%</span></td><td>{% if d.get('confidence_percent',d.get('confidence',0))|float >= 90 %}High-confidence detection{% elif d.get('confidence_percent',d.get('confidence',0))|float >= 65 %}Moderate-confidence detection{% else %}Low-confidence detection{% endif %}</td></tr>{% endfor %}
+ </table>
+ {% else %}<div class="notes">No vehicle damage regions were detected by the AI model.</div>{% endif %}
+</section>
+
+<section class="section">
+ <div class="section-title"><span class="bar orange"></span>Assessment Summary & Notes</div>
+ <div class="summary">INSURE AI identified <strong>{{ claim.get('detections',[])|length }}</strong> vehicle region(s) in the submitted image with a highest AI confidence of <strong>{{ claim.get('confidence',0) }}%</strong>. The calculated damage severity is <strong>{{ claim.get('severity','None') }}</strong>, with an estimated repair range of <strong>{{ claim.get('repair_cost','₹0') }}</strong>. This report is generated from AI-assisted image analysis and is intended to support insurance review.</div>
+</section>
+
+<section class="section">
+ <div class="section-title"><span class="bar teal"></span>Reviewer Notes</div>
+ <div class="notes">Insurance officer / assessor comments: ___________________________________________________________________________<br><br>________________________________________________________________________________________________________</div>
+</section>
+
+<section class="section">
+ <div class="signatures"><div class="sig">AI Assessment Generated By: <strong>INSURE AI</strong></div><div class="sig">Insurance Officer / Reviewer Signature</div></div>
+</section>
+
+<div class="footer"><span>INSURE AI · Vehicle Damage Assessment System</span><span>AI-generated assessment · Final claim decision remains with the insurer</span></div>
+</div>
+<button class="print-btn" onclick="window.print()">Print / Save PDF</button>
+</body>
+</html>

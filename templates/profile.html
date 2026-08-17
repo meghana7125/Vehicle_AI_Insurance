@@ -1,0 +1,848 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>My Profile - INSURE AI</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet">
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+    <style>
+
+        .profile-wrapper {
+            max-width: 1050px;
+        }
+
+        .profile-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 30px rgba(20, 40, 80, 0.06);
+        }
+
+        /* PROFILE TOP */
+
+        .profile-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #edf0f5;
+            margin-bottom: 28px;
+        }
+
+        .profile-user {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .large-avatar {
+            width: 78px;
+            height: 78px;
+            border-radius: 50%;
+
+            background: linear-gradient(
+                135deg,
+                #246eff,
+                #5796ff
+            );
+
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 27px;
+            font-weight: 800;
+
+            box-shadow: 0 10px 25px rgba(36,110,255,.2);
+        }
+
+        .profile-user h2 {
+            margin: 0 0 6px;
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .profile-user p {
+            margin: 0;
+            color: #8994a8;
+            font-size: 12px;
+        }
+
+        .edit-profile-btn {
+            background: #246eff;
+            color: white;
+            text-decoration: none;
+
+            padding: 11px 18px;
+
+            border-radius: 10px;
+
+            font-size: 12px;
+            font-weight: 600;
+
+            transition: .25s;
+        }
+
+        .edit-profile-btn:hover {
+            background: #1658d5;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* SECTION */
+
+        .profile-section {
+            margin-bottom: 28px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+
+            margin-bottom: 17px;
+        }
+
+        .section-title-icon {
+            width: 34px;
+            height: 34px;
+
+            border-radius: 9px;
+
+            background: #edf3ff;
+            color: #246eff;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .section-title h3 {
+            margin: 0;
+
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .section-title span {
+            display: block;
+
+            font-size: 10px;
+            color: #98a2b3;
+
+            margin-top: 2px;
+        }
+
+        /* DETAILS GRID */
+
+        .details-grid {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 15px;
+        }
+
+        .detail-box {
+            background: #f8faff;
+
+            border: 1px solid #e9eef6;
+
+            border-radius: 12px;
+
+            padding: 15px;
+        }
+
+        .detail-box.full {
+            grid-column: 1 / -1;
+        }
+
+        .detail-label {
+            display: block;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            color: #7d899d;
+
+            text-transform: uppercase;
+
+            letter-spacing: .6px;
+
+            margin-bottom: 7px;
+        }
+
+        .detail-value {
+            font-size: 13px;
+
+            font-weight: 600;
+
+            color: #263248;
+
+            word-break: break-word;
+        }
+
+        .detail-value.empty {
+            color: #a4adba;
+            font-weight: 500;
+        }
+
+        /* INSURANCE */
+
+        .insurance-box {
+            background: linear-gradient(
+                135deg,
+                #0b1e42,
+                #16498f
+            );
+
+            color: white;
+
+            border-radius: 16px;
+
+            padding: 22px;
+
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 20px;
+        }
+
+        .insurance-item span {
+            display: block;
+
+            color: #a9bddf;
+
+            font-size: 10px;
+
+            text-transform: uppercase;
+
+            letter-spacing: .7px;
+
+            margin-bottom: 6px;
+        }
+
+        .insurance-item strong {
+            font-size: 14px;
+        }
+
+        /* RESPONSIVE */
+
+        @media(max-width: 750px) {
+
+            .profile-top {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-box.full {
+                grid-column: auto;
+            }
+
+            .insurance-box {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="dashboard-wrapper">
+
+
+    <!-- ================================================= -->
+    <!-- SIDEBAR -->
+    <!-- ================================================= -->
+
+    <aside class="sidebar">
+
+        <!-- BRAND -->
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                <i class="bi bi-shield-check"></i>
+            </div>
+
+            <div>
+
+                <span class="brand-main">
+                    INSURE
+                </span>
+
+                <span class="brand-ai">
+                    AI
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- USER -->
+
+        <div class="sidebar-user">
+
+            <div class="user-avatar">
+
+                {{ user.first_name[0] if user.first_name else 'M' }}
+
+            </div>
+
+            <div class="user-info">
+
+                <strong>
+                    {{ user.first_name }}
+                    {{ user.last_name }}
+                </strong>
+
+                <small>
+                    {{ user.email }}
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- NAVIGATION -->
+
+        <nav class="sidebar-nav">
+
+
+            <a
+                href="{{ url_for('dashboard') }}"
+                class="nav-item">
+
+                <i class="bi bi-grid-1x2-fill"></i>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <a
+                href="{{ url_for('profile') }}"
+                class="nav-item active">
+
+                <i class="bi bi-person-fill"></i>
+
+                <span>
+                    My Profile
+                </span>
+
+            </a>
+
+
+            <a
+                href="{{ url_for('assessment') }}"
+                class="nav-item">
+
+                <i class="bi bi-car-front-fill"></i>
+
+                <span>
+                    Vehicle Assessment
+                </span>
+
+            </a>
+
+
+            <a
+                href="{{ url_for('claims') }}"
+                class="nav-item">
+
+                <i class="bi bi-file-earmark-text-fill"></i>
+
+                <span>
+                    My Claims
+                </span>
+
+            </a>
+
+
+            <a
+                href="{{ url_for('history') }}"
+                class="nav-item">
+
+                <i class="bi bi-clock-history"></i>
+
+                <span>
+                    Claim History
+                </span>
+
+            </a>
+
+
+            <a
+                href="{{ url_for('settings') }}"
+                class="nav-item">
+
+                <i class="bi bi-gear-fill"></i>
+
+                <span>
+                    Settings
+                </span>
+
+            </a>
+
+        </nav>
+
+
+        <!-- LOGOUT -->
+
+        <div class="sidebar-bottom">
+
+            <a
+                href="{{ url_for('logout') }}"
+                class="logout-btn">
+
+                <i class="bi bi-box-arrow-left"></i>
+
+                <span>
+                    Logout
+                </span>
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ================================================= -->
+    <!-- MAIN -->
+    <!-- ================================================= -->
+
+    <main class="main-content">
+
+
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+            <div>
+
+                <h2>
+                    My Profile
+                </h2>
+
+                <p>
+                    View and manage your personal information
+                </p>
+
+            </div>
+
+        </header>
+
+
+        <!-- PROFILE -->
+
+        <div class="profile-wrapper">
+
+
+            <div class="profile-card">
+
+
+                <!-- PROFILE HEADER -->
+
+                <div class="profile-top">
+
+
+                    <div class="profile-user">
+
+                        <div class="large-avatar">
+
+                            {{ user.first_name[0] if user.first_name else 'M' }}
+
+                        </div>
+
+
+                        <div>
+
+                            <h2>
+
+                                {{ user.first_name }}
+                                {{ user.last_name }}
+
+                            </h2>
+
+                            <p>
+                                INSURE AI Customer
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <a
+                        href="{{ url_for('profile') }}"
+                        class="edit-profile-btn">
+
+                        <i class="bi bi-pencil"></i>
+
+                        Edit Profile
+
+                    </a>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- PERSONAL INFORMATION -->
+                <!-- ================================================= -->
+
+                <div class="profile-section">
+
+
+                    <div class="section-title">
+
+                        <div class="section-title-icon">
+
+                            <i class="bi bi-person"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Personal Information
+                            </h3>
+
+                            <span>
+                                Your basic personal details
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="details-grid">
+
+
+                        <!-- FIRST NAME -->
+
+                        <div class="detail-box">
+
+                            <span class="detail-label">
+                                First Name
+                            </span>
+
+                            <div class="detail-value">
+
+                                {{ user.first_name or "Not provided" }}
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- LAST NAME -->
+
+                        <div class="detail-box">
+
+                            <span class="detail-label">
+                                Last Name
+                            </span>
+
+                            <div class="detail-value">
+
+                                {{ user.last_name or "Not provided" }}
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- EMAIL -->
+
+                        <div class="detail-box">
+
+                            <span class="detail-label">
+                                Email Address
+                            </span>
+
+                            <div class="detail-value">
+
+                                {{ user.email or "Not provided" }}
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- PHONE -->
+
+                        <div class="detail-box">
+
+                            <span class="detail-label">
+                                Phone Number
+                            </span>
+
+                            <div class="detail-value">
+
+                                {{ user.phone or "Not provided" }}
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- DOB -->
+
+                        <div class="detail-box">
+
+                            <span class="detail-label">
+                                Date of Birth
+                            </span>
+
+                            <div class="detail-value">
+
+                                {{ user.dob or "Not provided" }}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- ADDRESS -->
+                <!-- ================================================= -->
+
+                <div class="profile-section">
+
+
+                    <div class="section-title">
+
+                        <div class="section-title-icon">
+
+                            <i class="bi bi-geo-alt"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Address Information
+                            </h3>
+
+                            <span>
+                                Your current residential address
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="details-grid">
+
+
+                        <!-- ADDRESS -->
+
+                        <div class="detail-box full">
+
+                            <span class="detail-label">
+                                Address
+                            </span>
+
+                            <div class="detail-value">
+
+                                {{ user.address or "Not provided" }}
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- CITY -->
+
+                        <div class="detail-box">
+
+                            <span class="detail-label">
+                                City
+                            </span>
+
+                            <div class="detail-value">
+
+                                {{ user.city or "Not provided" }}
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- STATE -->
+
+                        <div class="detail-box">
+
+                            <span class="detail-label">
+                                State
+                            </span>
+
+                            <div class="detail-value">
+
+                                {{ user.state or "Not provided" }}
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- PINCODE -->
+
+                        <div class="detail-box">
+
+                            <span class="detail-label">
+                                Pincode
+                            </span>
+
+                            <div class="detail-value">
+
+                                {{ user.pincode or "Not provided" }}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- INSURANCE -->
+                <!-- ================================================= -->
+
+                <div class="profile-section">
+
+
+                    <div class="section-title">
+
+                        <div class="section-title-icon">
+
+                            <i class="bi bi-shield-check"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Insurance Information
+                            </h3>
+
+                            <span>
+                                Your vehicle insurance details
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="insurance-box">
+
+
+                        <div class="insurance-item">
+
+                            <span>
+                                Policy Number
+                            </span>
+
+                            <strong>
+                                {{ user.policy or "Not Assigned" }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="insurance-item">
+
+                            <span>
+                                Vehicle
+                            </span>
+
+                            <strong>
+                                {{ user.vehicle or "Not provided" }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="insurance-item">
+
+                            <span>
+                                Insurance Provider
+                            </span>
+
+                            <strong>
+                                {{ user.insurance or "Not provided" }}
+                            </strong>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <footer>
+
+            © 2026 INSURE AI · AI-Powered Insurance Platform
+
+        </footer>
+
+
+    </main>
+
+</div>
+
+</body>
+
+</html>
+

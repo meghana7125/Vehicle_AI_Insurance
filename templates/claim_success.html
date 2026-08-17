@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Claim Submitted | INSURE AI</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        body {
+            background: #f5f7fb;
+        }
+
+        .success-container {
+            max-width: 850px;
+            margin: 60px auto;
+            padding: 20px;
+        }
+
+        .success-card {
+            background: white;
+            border-radius: 22px;
+            padding: 45px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            margin: auto;
+            border-radius: 50%;
+            background: #d1fae5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+
+        .claim-id {
+            font-size: 30px;
+            font-weight: 800;
+            margin: 20px 0;
+        }
+
+        .info-box {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 25px;
+            text-align: left;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+<div class="success-container">
+
+    {% if error %}
+
+    <div class="success-card">
+
+        <div class="success-icon">
+            ⚠️
+        </div>
+
+        <h2 class="mt-4">
+            Something went wrong
+        </h2>
+
+        <p class="text-muted">
+            {{ error }}
+        </p>
+
+        <a
+            href="{{ url_for('dashboard') }}"
+            class="btn btn-primary"
+        >
+            Back to Dashboard
+        </a>
+
+    </div>
+
+    {% else %}
+
+    <div class="success-card">
+
+        <div class="success-icon">
+            ✓
+        </div>
+
+        <h1 class="mt-4">
+            Claim Submitted Successfully
+        </h1>
+
+        <p class="text-muted">
+
+            Your vehicle damage insurance claim
+            has been received and is now under review.
+
+        </p>
+
+
+        <div class="claim-id">
+
+            {{ claim.claim_id }}
+
+        </div>
+
+
+        <div class="info-box">
+
+            <div class="info-row">
+
+                <strong>Customer</strong>
+
+                <span>
+                    {{ claim.first_name }}
+                    {{ claim.last_name }}
+                </span>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <strong>Vehicle</strong>
+
+                <span>
+                    {{ claim.vehicle or "Not specified" }}
+                </span>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <strong>Registration</strong>
+
+                <span>
+                    {{ claim.vehicle_number }}
+                </span>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <strong>Accident Date</strong>
+
+                <span>
+                    {{ claim.accident_date }}
+                </span>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <strong>Severity</strong>
+
+                <span>
+                    {{ claim.severity }}
+                </span>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <strong>AI Confidence</strong>
+
+                <span>
+                    {{ claim.confidence }}%
+                </span>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <strong>Estimated Repair Cost</strong>
+
+                <span>
+                    {{ claim.repair_cost }}
+                </span>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <strong>Status</strong>
+
+                <span>
+                    {{ claim.status }}
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="mt-4">
+
+            <a
+                href="{{ url_for('claims') }}"
+                class="btn btn-primary me-2"
+            >
+                View My Claims
+            </a>
+
+            <a
+                href="{{ url_for('dashboard') }}"
+                class="btn btn-outline-secondary"
+            >
+                Back to Dashboard
+            </a>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+
+</body>
+</html>

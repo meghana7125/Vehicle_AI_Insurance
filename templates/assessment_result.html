@@ -1,0 +1,599 @@
+{% extends "base_dashboard.html" %}
+
+{% set active_page = "assessment" %}
+
+{% block title %}
+Assessment Result | INSURE AI
+{% endblock %}
+
+
+{% block extra_head %}
+
+<style>
+
+.result-container {
+    max-width: 1200px;
+}
+
+.result-grid {
+    display: grid;
+    grid-template-columns: 1fr 390px;
+    gap: 26px;
+}
+
+.result-card {
+    background: #ffffff;
+    border: 1px solid #e3e9f2;
+    border-radius: 22px;
+    padding: 28px;
+    box-shadow: 0 15px 40px rgba(20,40,80,.07);
+}
+
+.image-wrapper {
+    background: #07101f;
+    border-radius: 18px;
+    overflow: hidden;
+    margin-top: 18px;
+}
+
+.image-wrapper img {
+    width: 100%;
+    max-height: 620px;
+    object-fit: contain;
+    display: block;
+}
+
+.card-title {
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.card-subtitle {
+    font-size: 12px;
+    color: #8190a5;
+    margin-top: 5px;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 20px;
+}
+
+.summary-box {
+    background: #f7f9fd;
+    border: 1px solid #e1e8f2;
+    border-radius: 15px;
+    padding: 16px;
+}
+
+.summary-label {
+    color: #8492a6;
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.summary-value {
+    margin-top: 6px;
+    font-size: 18px;
+    font-weight: 800;
+    color: #10213a;
+}
+
+.section-title {
+    margin-top: 25px;
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.detection-list {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.detection-item {
+    background: #f7f9fd;
+    border: 1px solid #e2e8f1;
+    border-radius: 12px;
+    padding: 13px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.detection-name {
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.detection-confidence {
+    color: #246eff;
+    font-weight: 800;
+    font-size: 12px;
+}
+
+.damage-item {
+    border-left: 4px solid #ef4444;
+}
+
+.part-item {
+    border-left: 4px solid #246eff;
+}
+
+.warning-box {
+    margin-top: 15px;
+    padding: 13px 15px;
+    border-radius: 12px;
+    background: #fff8e7;
+    border: 1px solid #f3d58a;
+    color: #765b14;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.button {
+    display: block;
+    width: 100%;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 12px;
+    padding: 14px;
+    margin-top: 12px;
+    font-weight: 800;
+    font-size: 13px;
+}
+
+.primary-button {
+    color: white;
+    background: linear-gradient(
+        135deg,
+        #246eff,
+        #13b9dc
+    );
+}
+
+.secondary-button {
+    color: #17304f;
+    background: white;
+    border: 1px solid #dbe3ee;
+}
+
+@media(max-width: 950px) {
+
+    .result-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="page-header">
+
+    <div class="page-header-label">
+        AI VEHICLE INSPECTION
+    </div>
+
+    <h1>
+        Assessment Complete
+    </h1>
+
+    <p>
+        INSURE AI has completed the computer-vision
+        assessment of your uploaded vehicle image.
+    </p>
+
+</div>
+
+
+<div class="result-container">
+
+    <div class="result-grid">
+
+
+        <!-- =================================================
+             IMAGE
+        ================================================== -->
+
+        <section class="result-card">
+
+            <div class="card-title">
+                AI Inspection Image
+            </div>
+
+            <div class="card-subtitle">
+                Red boxes represent damage-model detections.
+                Blue boxes represent visible car parts.
+            </div>
+
+
+            <div class="image-wrapper">
+
+                {% if assessment.annotated_image_url %}
+
+                <img
+                    src="{{ assessment.annotated_image_url }}"
+                    alt="AI Inspection Result"
+                >
+
+                {% else %}
+
+                <img
+                    src="{{ assessment.image_url }}"
+                    alt="Vehicle Image"
+                >
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="warning-box">
+
+                <strong>Important:</strong>
+
+                The current 21-class model identifies
+                vehicle parts such as Hood, Mirror and
+                Grille. It does not independently determine
+                whether each individual part is damaged.
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             SUMMARY
+        ================================================== -->
+
+        <aside class="result-card">
+
+            <div class="card-title">
+                Damage Summary
+            </div>
+
+            <div class="card-subtitle">
+                Assessment ID:
+                {{ assessment_id }}
+            </div>
+
+
+            <!-- SUMMARY -->
+
+            <div class="summary-grid">
+
+
+                <div class="summary-box">
+
+                    <div class="summary-label">
+                        Vehicle
+                    </div>
+
+                    <div class="summary-value">
+
+                        {{ assessment.get(
+                            "vehicle_type",
+                            "Unknown"
+                        )|title }}
+
+                    </div>
+
+                </div>
+
+
+                <div class="summary-box">
+
+                    <div class="summary-label">
+                        Vehicle Confidence
+                    </div>
+
+                    <div class="summary-value">
+
+                        {{ assessment.get(
+                            "vehicle_confidence",
+                            0
+                        ) }}%
+
+                    </div>
+
+                </div>
+
+
+                <div class="summary-box">
+
+                    <div class="summary-label">
+                        Damage Status
+                    </div>
+
+                    <div class="summary-value">
+
+                        {% if assessment.get(
+                            "damage_detected"
+                        ) %}
+
+                            Detected
+
+                        {% else %}
+
+                            No Damage
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <div class="summary-box">
+
+                    <div class="summary-label">
+                        AI Confidence
+                    </div>
+
+                    <div class="summary-value">
+
+                        {{ assessment.get(
+                            "confidence",
+                            0
+                        ) }}%
+
+                    </div>
+
+                </div>
+
+
+                <div class="summary-box">
+
+                    <div class="summary-label">
+                        Severity
+                    </div>
+
+                    <div class="summary-value">
+
+                        {{ assessment.get(
+                            "severity",
+                            "N/A"
+                        ) }}
+
+                    </div>
+
+                </div>
+
+
+                <div class="summary-box">
+
+                    <div class="summary-label">
+                        Preliminary Repair Estimate
+                    </div>
+
+                    <div class="summary-value">
+
+                        ₹{{ "{:,.0f}".format(
+                            assessment.get(
+                                "repair_cost",
+                                0
+                            )|float
+                        ) }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 DAMAGE DETECTIONS
+            ================================================== -->
+
+            <div class="section-title">
+
+                Damage Detection
+
+            </div>
+
+
+            <div class="detection-list">
+
+                {% set damages =
+                    assessment.get(
+                        "damage_detections",
+                        assessment.get(
+                            "detections",
+                            []
+                        )
+                    )
+                %}
+
+
+                {% if damages %}
+
+                    {% for item in damages %}
+
+                        <div class="
+                            detection-item
+                            damage-item
+                        ">
+
+                            <span class="detection-name">
+
+                                {{ item.get(
+                                    "display_label",
+                                    item.get(
+                                        "class_name",
+                                        "Damage"
+                                    )
+                                ) }}
+
+                            </span>
+
+                            <span class="detection-confidence">
+
+                                {{ item.get(
+                                    "confidence",
+                                    0
+                                ) }}%
+
+                            </span>
+
+                        </div>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <div class="detection-item">
+
+                        <span class="detection-name">
+                            No damage detected
+                        </span>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- =================================================
+                 CAR PARTS
+            ================================================== -->
+
+            {% if assessment.get(
+                "vehicle_type"
+            ) == "car" %}
+
+                <div class="section-title">
+
+                    Vehicle Parts Detected
+
+                </div>
+
+                <div class="detection-list">
+
+                    {% set parts =
+                        assessment.get(
+                            "part_detections",
+                            []
+                        )
+                    %}
+
+
+                    {% if parts %}
+
+                        {% for item in parts %}
+
+                            <div class="
+                                detection-item
+                                part-item
+                            ">
+
+                                <span class="detection-name">
+
+                                    {{ item.get(
+                                        "display_label",
+                                        item.get(
+                                            "class_name",
+                                            "Part"
+                                        )
+                                    ) }}
+
+                                </span>
+
+                                <span class="
+                                    detection-confidence
+                                ">
+
+                                    {{ item.get(
+                                        "confidence",
+                                        0
+                                    ) }}%
+
+                                </span>
+
+                            </div>
+
+                        {% endfor %}
+
+                    {% else %}
+
+                        <div class="detection-item">
+
+                            <span class="detection-name">
+
+                                No car parts confidently detected.
+
+                            </span>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            {% else %}
+
+                <div class="warning-box">
+
+                    The 21-class car-part model was not
+                    used because this vehicle was detected
+                    as a
+                    <strong>
+                        {{ assessment.get(
+                            "vehicle_type",
+                            "non-car"
+                        )|title }}
+                    </strong>.
+
+                    This prevents incorrect labels such as
+                    "Front-door", "Grille" or "Hood" from
+                    being assigned to motorcycles, trucks
+                    or buses.
+
+                </div>
+
+            {% endif %}
+
+
+            <!-- =================================================
+                 BUTTONS
+            ================================================== -->
+
+            <a
+                href="{{ url_for(
+                    'claim',
+                    assessment_id=assessment_id
+                ) }}"
+                class="button primary-button"
+            >
+
+                Generate Insurance Claim
+
+            </a>
+
+
+            <a
+                href="{{ url_for('assessment') }}"
+                class="button secondary-button"
+            >
+
+                New Assessment
+
+            </a>
+
+        </aside>
+
+    </div>
+
+</div>
+
+{% endblock %}

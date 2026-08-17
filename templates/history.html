@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Claim History | INSURE AI</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/dashboard.css') }}"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Poppins", Arial, sans-serif;
+            background: #f4f7fc;
+            color: #102a56;
+        }
+
+        .history-page {
+            min-height: 100vh;
+        }
+
+        /* =====================================================
+           SIDEBAR
+        ===================================================== */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+
+            width: 280px;
+
+            background: #071936;
+
+            padding: 28px 18px;
+
+            color: white;
+
+            overflow-y: auto;
+
+            z-index: 1000;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            padding: 0 12px;
+
+            margin-bottom: 34px;
+        }
+
+        .brand-icon {
+            width: 48px;
+            height: 48px;
+
+            border-radius: 14px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #2874f0;
+
+            font-size: 25px;
+
+            box-shadow: 0 8px 25px rgba(40, 116, 240, 0.3);
+        }
+
+        .brand-text {
+            font-size: 23px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .brand-text span {
+            color: #3f7df4;
+        }
+
+        /* USER */
+
+        .user-card {
+            background: rgba(255,255,255,0.07);
+
+            border: 1px solid rgba(255,255,255,0.12);
+
+            border-radius: 18px;
+
+            padding: 16px;
+
+            display: flex;
+            align-items: center;
+
+            gap: 13px;
+
+            margin-bottom: 28px;
+        }
+
+        .avatar {
+            width: 52px;
+            height: 52px;
+
+            min-width: 52px;
+
+            border-radius: 50%;
+
+            background: #3278ed;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .user-name {
+            font-size: 15px;
+            font-weight: 700;
+
+            color: white;
+
+            margin-bottom: 4px;
+        }
+
+        .user-email {
+            font-size: 12px;
+
+            color: #9eb1d2;
+
+            word-break: break-word;
+        }
+
+        /* NAV */
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+
+            gap: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+
+            gap: 15px;
+
+            padding: 15px 17px;
+
+            border-radius: 14px;
+
+            color: #aebdd7;
+
+            text-decoration: none;
+
+            font-size: 15px;
+
+            font-weight: 600;
+
+            transition: 0.2s ease;
+        }
+
+        .nav-item i {
+            width: 25px;
+
+            font-size: 19px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.07);
+
+            color: white;
+        }
+
+        .nav-item.active {
+            background: #2874f0;
+
+            color: white;
+
+            box-shadow: 0 8px 22px rgba(40,116,240,0.28);
+        }
+
+        .logout {
+            margin-top: 25px;
+
+            color: #ff7777;
+        }
+
+        /* =====================================================
+           MAIN CONTENT
+        ===================================================== */
+
+        .main-content {
+            margin-left: 280px;
+
+            min-height: 100vh;
+
+            padding: 42px;
+        }
+
+        .page-header {
+            background: white;
+
+            border-radius: 22px;
+
+            padding: 30px 34px;
+
+            margin-bottom: 28px;
+
+            box-shadow: 0 8px 30px rgba(24, 51, 93, 0.07);
+        }
+
+        .page-label {
+            color: #2874f0;
+
+            font-size: 13px;
+
+            font-weight: 800;
+
+            letter-spacing: 1.5px;
+
+            text-transform: uppercase;
+
+            margin-bottom: 8px;
+        }
+
+        .page-header h1 {
+            margin: 0;
+
+            font-size: 34px;
+
+            font-weight: 800;
+
+            color: #0c2855;
+        }
+
+        .page-header p {
+            margin: 8px 0 0;
+
+            color: #7182a1;
+
+            font-size: 15px;
+        }
+
+        /* =====================================================
+           STAT CARDS
+        ===================================================== */
+
+        .stats {
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 20px;
+
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: white;
+
+            border-radius: 20px;
+
+            padding: 23px;
+
+            box-shadow: 0 8px 30px rgba(24, 51, 93, 0.06);
+
+            border: 1px solid #edf1f7;
+        }
+
+        .stat-icon {
+            width: 45px;
+            height: 45px;
+
+            border-radius: 13px;
+
+            background: #edf4ff;
+
+            color: #2874f0;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 20px;
+
+            margin-bottom: 13px;
+        }
+
+        .stat-title {
+            color: #7b8ba6;
+
+            font-size: 13px;
+
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 27px;
+
+            font-weight: 800;
+
+            color: #102a56;
+        }
+
+        /* =====================================================
+           HISTORY CARD
+        ===================================================== */
+
+        .history-container {
+            background: white;
+
+            border-radius: 22px;
+
+            padding: 28px;
+
+            box-shadow: 0 8px 30px rgba(24, 51, 93, 0.06);
+        }
+
+        .section-heading {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 22px;
+        }
+
+        .section-heading h2 {
+            margin: 0;
+
+            font-size: 21px;
+
+            font-weight: 800;
+
+            color: #102a56;
+        }
+
+        .section-heading span {
+            color: #7b8ba6;
+
+            font-size: 13px;
+        }
+
+        /* =====================================================
+           CLAIM ROW
+        ===================================================== */
+
+        .claim-card {
+            border: 1px solid #e8edf5;
+
+            border-radius: 17px;
+
+            padding: 21px;
+
+            margin-bottom: 15px;
+
+            transition: 0.2s ease;
+
+            background: #ffffff;
+        }
+
+        .claim-card:hover {
+            transform: translateY(-2px);
+
+            box-shadow: 0 8px 25px rgba(24, 51, 93, 0.08);
+
+            border-color: #d8e5fb;
+        }
+
+        .claim-top {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: flex-start;
+
+            gap: 20px;
+
+            margin-bottom: 18px;
+        }
+
+        .claim-id {
+            font-size: 16px;
+
+            font-weight: 800;
+
+            color: #153c76;
+
+            margin-bottom: 5px;
+        }
+
+        .claim-date {
+            font-size: 12px;
+
+            color: #8290a8;
+        }
+
+        .status {
+            padding: 7px 13px;
+
+            border-radius: 30px;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            white-space: nowrap;
+        }
+
+        .status-review {
+            background: #fff4d8;
+
+            color: #a36a00;
+        }
+
+        .status-approved {
+            background: #e4f8ed;
+
+            color: #18854a;
+        }
+
+        .status-rejected {
+            background: #ffe7e7;
+
+            color: #d33d3d;
+        }
+
+        .status-default {
+            background: #edf2f8;
+
+            color: #53647d;
+        }
+
+        .claim-details {
+            display: grid;
+
+            grid-template-columns: repeat(4, 1fr);
+
+            gap: 15px;
+
+            background: #f8faff;
+
+            border-radius: 13px;
+
+            padding: 17px;
+        }
+
+        .detail-label {
+            font-size: 11px;
+
+            color: #8a98ae;
+
+            margin-bottom: 5px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            font-size: 14px;
+
+            font-weight: 700;
+
+            color: #243e67;
+
+            word-break: break-word;
+        }
+
+        .view-button {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            margin-top: 16px;
+
+            padding: 9px 15px;
+
+            border-radius: 10px;
+
+            background: #edf4ff;
+
+            color: #2874f0;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            transition: 0.2s;
+        }
+
+        .view-button:hover {
+            background: #2874f0;
+
+            color: white;
+        }
+
+        /* =====================================================
+           EMPTY STATE
+        ===================================================== */
+
+        .empty-state {
+            text-align: center;
+
+            padding: 65px 20px;
+        }
+
+        .empty-icon {
+            width: 75px;
+            height: 75px;
+
+            margin: 0 auto 20px;
+
+            border-radius: 50%;
+
+            background: #edf4ff;
+
+            color: #2874f0;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 31px;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+
+            font-weight: 800;
+
+            color: #17345f;
+
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            color: #8492aa;
+
+            font-size: 14px;
+
+            max-width: 450px;
+
+            margin: 0 auto 22px;
+        }
+
+        .assessment-button {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            padding: 12px 20px;
+
+            background: #2874f0;
+
+            color: white;
+
+            border-radius: 11px;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            box-shadow: 0 8px 20px rgba(40,116,240,0.2);
+        }
+
+        .assessment-button:hover {
+            color: white;
+
+            background: #1d63d2;
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 1000px) {
+
+            .sidebar {
+                width: 230px;
+            }
+
+            .main-content {
+                margin-left: 230px;
+
+                padding: 25px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .claim-details {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                position: relative;
+
+                width: 100%;
+
+                min-height: auto;
+            }
+
+            .main-content {
+                margin-left: 0;
+
+                padding: 18px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .claim-details {
+                grid-template-columns: 1fr;
+            }
+
+            .claim-top {
+                flex-direction: column;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="history-page">
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                <i class="bi bi-shield-check"></i>
+            </div>
+
+            <div class="brand-text">
+                INSURE <span>AI</span>
+            </div>
+
+        </div>
+
+
+        <!-- USER -->
+
+        <div class="user-card">
+
+            <div class="avatar">
+
+                {{ user.first_name[0] if user and user.first_name else 'M' }}
+
+            </div>
+
+            <div>
+
+                <div class="user-name">
+
+                    {{ user.first_name if user and user.first_name else 'Meghana' }}
+
+                    {{ user.last_name if user and user.last_name else 'Badugu' }}
+
+                </div>
+
+                <div class="user-email">
+
+                    {{ user.email if user and user.email else 'meghanabadugu14@gmail.com' }}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- NAVIGATION -->
+
+        <nav class="nav-menu">
+
+            <a
+                href="{{ url_for('dashboard') }}"
+                class="nav-item"
+            >
+                <i class="bi bi-grid-fill"></i>
+                Dashboard
+            </a>
+
+
+            <a
+                href="{{ url_for('profile') }}"
+                class="nav-item"
+            >
+                <i class="bi bi-person-fill"></i>
+                My Profile
+            </a>
+
+
+            <a
+                href="{{ url_for('assessment') }}"
+                class="nav-item"
+            >
+                <i class="bi bi-car-front-fill"></i>
+                Vehicle Assessment
+            </a>
+
+
+            <a
+                href="{{ url_for('claims') }}"
+                class="nav-item"
+            >
+                <i class="bi bi-file-earmark-text-fill"></i>
+                My Claims
+            </a>
+
+
+            <a
+                href="{{ url_for('history') }}"
+                class="nav-item active"
+            >
+                <i class="bi bi-clock-history"></i>
+                Claim History
+            </a>
+
+
+            <a
+                href="{{ url_for('settings') }}"
+                class="nav-item"
+            >
+                <i class="bi bi-gear-fill"></i>
+                Settings
+            </a>
+
+
+            <a
+                href="{{ url_for('logout') }}"
+                class="nav-item logout"
+            >
+                <i class="bi bi-box-arrow-right"></i>
+                Logout
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="main-content">
+
+
+        <!-- HEADER -->
+
+        <div class="page-header">
+
+            <div class="page-label">
+                INSURANCE RECORDS
+            </div>
+
+            <h1>
+                Claim History
+            </h1>
+
+            <p>
+                View your previous insurance claims and AI assessment records.
+            </p>
+
+        </div>
+
+
+        <!-- =================================================
+             STATISTICS
+        ================================================== -->
+
+        {% set total_claims = claims|length %}
+
+        {% set review_count = namespace(value=0) %}
+
+        {% set approved_count = namespace(value=0) %}
+
+        {% set rejected_count = namespace(value=0) %}
+
+
+        {% for claim in claims %}
+
+            {% if claim.status == "Under Review" %}
+
+                {% set review_count.value = review_count.value + 1 %}
+
+            {% elif claim.status == "Approved" %}
+
+                {% set approved_count.value = approved_count.value + 1 %}
+
+            {% elif claim.status == "Rejected" %}
+
+                {% set rejected_count.value = rejected_count.value + 1 %}
+
+            {% endif %}
+
+        {% endfor %}
+
+
+        <div class="stats">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    <i class="bi bi-files"></i>
+                </div>
+
+                <div class="stat-title">
+                    Total Claims
+                </div>
+
+                <div class="stat-value">
+                    {{ total_claims }}
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    <i class="bi bi-hourglass-split"></i>
+                </div>
+
+                <div class="stat-title">
+                    Under Review
+                </div>
+
+                <div class="stat-value">
+                    {{ review_count.value }}
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    <i class="bi bi-check-circle"></i>
+                </div>
+
+                <div class="stat-title">
+                    Approved
+                </div>
+
+                <div class="stat-value">
+                    {{ approved_count.value }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             CLAIM HISTORY
+        ================================================== -->
+
+        <div class="history-container">
+
+            <div class="section-heading">
+
+                <h2>
+                    Previous Claims
+                </h2>
+
+                <span>
+                    {{ total_claims }} record{% if total_claims != 1 %}s{% endif %}
+                </span>
+
+            </div>
+
+
+            {% if claims %}
+
+
+                {% for claim in claims %}
+
+                <div class="claim-card">
+
+
+                    <div class="claim-top">
+
+                        <div>
+
+                            <div class="claim-id">
+
+                                <i class="bi bi-file-earmark-check"></i>
+
+                                {{ claim.claim_id if claim.claim_id else claim.id }}
+
+                            </div>
+
+                            <div class="claim-date">
+
+                                Submitted:
+
+                                {{ claim.created_at if claim.created_at else "Date not available" }}
+
+                            </div>
+
+                        </div>
+
+
+                        {% if claim.status == "Under Review" %}
+
+                            <span class="status status-review">
+                                <i class="bi bi-hourglass-split"></i>
+                                Under Review
+                            </span>
+
+                        {% elif claim.status == "Approved" %}
+
+                            <span class="status status-approved">
+                                <i class="bi bi-check-circle"></i>
+                                Approved
+                            </span>
+
+                        {% elif claim.status == "Rejected" %}
+
+                            <span class="status status-rejected">
+                                <i class="bi bi-x-circle"></i>
+                                Rejected
+                            </span>
+
+                        {% else %}
+
+                            <span class="status status-default">
+                                {{ claim.status if claim.status else "Unknown" }}
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- CLAIM DETAILS -->
+
+                    <div class="claim-details">
+
+
+                        <div>
+
+                            <div class="detail-label">
+                                Vehicle
+                            </div>
+
+                            <div class="detail-value">
+
+                                {{ claim.vehicle if claim.vehicle else "Not specified" }}
+
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="detail-label">
+                                Registration
+                            </div>
+
+                            <div class="detail-value">
+
+                                {{ claim.vehicle_number if claim.vehicle_number else "Not specified" }}
+
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="detail-label">
+                                Severity
+                            </div>
+
+                            <div class="detail-value">
+
+                                {{ claim.severity if claim.severity else "None" }}
+
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="detail-label">
+                                Estimated Cost
+                            </div>
+
+                            <div class="detail-value">
+
+                                {{ claim.repair_cost if claim.repair_cost else "₹0" }}
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- VIEW -->
+
+                    {% if claim.id or claim.claim_id %}
+
+                    <a
+                        href="{{ url_for('claim_success', claim_id=claim.claim_id if claim.claim_id else claim.id) }}"
+                        class="view-button"
+                    >
+
+                        <i class="bi bi-eye"></i>
+
+                        View Claim Details
+
+                    </a>
+
+                    {% endif %}
+
+
+                </div>
+
+                {% endfor %}
+
+
+            {% else %}
+
+
+                <!-- EMPTY -->
+
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+
+                        <i class="bi bi-clock-history"></i>
+
+                    </div>
+
+
+                    <h3>
+                        No Claim History Yet
+                    </h3>
+
+
+                    <p>
+                        You have not submitted any insurance claims yet.
+                        Complete a vehicle damage assessment to create your
+                        first insurance claim.
+                    </p>
+
+
+                    <a
+                        href="{{ url_for('assessment') }}"
+                        class="assessment-button"
+                    >
+
+                        <i class="bi bi-car-front"></i>
+
+                        Start Vehicle Assessment
+
+                    </a>
+
+                </div>
+
+
+            {% endif %}
+
+
+        </div>
+
+
+    </main>
+
+</div>
+
+
+</body>
+
+</html>

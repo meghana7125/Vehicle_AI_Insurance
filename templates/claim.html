@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Claim | INSURE AI</title>
+    <style>
+        *{box-sizing:border-box}
+        body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#12213a}
+        .nav{background:#071326;color:#fff;padding:18px 7%;display:flex;gap:28px;align-items:center}
+        .nav a{color:#fff;text-decoration:none}
+        .container{max-width:1000px;margin:40px auto;padding:0 20px}
+        .card{background:#fff;border-radius:20px;padding:30px;box-shadow:0 10px 35px rgba(0,0,0,.08);margin-bottom:24px}
+        h1{margin-top:0}
+        .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+        .field{display:flex;flex-direction:column;gap:8px}
+        .full{grid-column:1/-1}
+        label{font-weight:700}
+        input,textarea{width:100%;padding:13px;border:1px solid #d9e1ec;border-radius:10px;font-size:15px}
+        textarea{min-height:130px;resize:vertical}
+        .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+        .stat{background:#f5f8fc;padding:18px;border-radius:14px}
+        .stat small{display:block;color:#6b7b91;margin-bottom:8px}
+        .stat strong{font-size:20px}
+        button{border:0;border-radius:12px;padding:15px 24px;background:#149ee8;color:#fff;font-size:16px;font-weight:700;cursor:pointer;width:100%}
+        .note{padding:14px;background:#fff8df;border:1px solid #f0d27a;border-radius:12px;color:#725600}
+        @media(max-width:700px){.grid,.summary{grid-template-columns:1fr}.full{grid-column:auto}}
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <strong>INSURE AI</strong>
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('claims') }}">My Claims</a>
+        <a href="{{ url_for('history') }}">History</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </nav>
+
+    <main class="container">
+        <div class="card">
+            <h1>Submit Insurance Claim</h1>
+            <p>Review your AI vehicle assessment and submit your insurance claim.</p>
+
+            <div class="summary">
+                <div class="stat">
+                    <small>Vehicle Type</small>
+                    <strong>{{ assessment.get('vehicle_type','Unknown')|title }}</strong>
+                </div>
+                <div class="stat">
+                    <small>Vehicle Confidence</small>
+                    <strong>{{ assessment.get('vehicle_confidence',0) }}%</strong>
+                </div>
+                <div class="stat">
+                    <small>Damage Status</small>
+                    <strong>
+                        {{ 'Damage Detected' if assessment.get('damage_detected') else 'No Damage' }}
+                    </strong>
+                </div>
+                <div class="stat">
+                    <small>Damage Confidence</small>
+                    <strong>{{ assessment.get('confidence',0) }}%</strong>
+                </div>
+                <div class="stat">
+                    <small>Severity</small>
+                    <strong>{{ assessment.get('severity','N/A') }}</strong>
+                </div>
+                <div class="stat">
+                    <small>Estimated Repair Cost</small>
+                    <strong>₹{{ "{:,.0f}".format(assessment.get('repair_cost',0)|float) }}</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Claim Information</h2>
+
+            <form method="POST" action="{{ url_for('submit_claim', assessment_id=assessment_id) }}">
+                <div class="grid">
+                    <div class="field">
+                        <label>Vehicle Registration Number</label>
+                        <input type="text" name="vehicle_number"
+                               placeholder="e.g. AP 39 AB 1234" required>
+                    </div>
+
+                    <div class="field">
+                        <label>Accident Date</label>
+                        <input type="date" name="accident_date" required>
+                    </div>
+
+                    <div class="field full">
+                        <label>Accident Location</label>
+                        <input type="text" name="accident_location"
+                               placeholder="e.g. Vijayawada, Andhra Pradesh" required>
+                    </div>
+
+                    <div class="field full">
+                        <label>Accident Description</label>
+                        <textarea name="accident_description"
+                                  placeholder="Example: The vehicle was involved in a road accident. The front-left side, front bumper and driver-side door were damaged." required></textarea>
+                    </div>
+
+                    <div class="full">
+                        <div class="note">
+                            AI estimates are preliminary and must be verified by an authorized insurance assessor.
+                        </div>
+                    </div>
+
+                    <div class="full">
+                        <button type="submit">Submit Insurance Claim</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

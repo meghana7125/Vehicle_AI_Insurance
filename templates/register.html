@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Register | INSURE AI</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+
+            font-family: Arial, sans-serif;
+
+            min-height: 100vh;
+
+            background: #050b18;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 30px;
+        }
+
+        .card {
+
+            width: 100%;
+
+            max-width: 500px;
+
+            background: white;
+
+            border-radius: 22px;
+
+            padding: 40px;
+
+            color: #172033;
+
+            box-shadow:
+                0 25px 70px
+                rgba(0,0,0,.4);
+        }
+
+        .logo {
+
+            text-align: center;
+
+            font-size: 27px;
+
+            font-weight: 800;
+
+            margin-bottom: 20px;
+        }
+
+        .logo span {
+
+            color: #2563eb;
+        }
+
+        h1 {
+
+            text-align: center;
+
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+
+            text-align: center;
+
+            color: #667085;
+
+            margin-bottom: 25px;
+        }
+
+        .error {
+
+            background: #fee4e2;
+
+            color: #b42318;
+
+            padding: 12px;
+
+            border-radius: 8px;
+
+            text-align: center;
+
+            margin-bottom: 15px;
+        }
+
+        .row {
+
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 15px;
+        }
+
+        label {
+
+            display: block;
+
+            font-weight: 700;
+
+            margin:
+                15px 0 7px;
+        }
+
+        input {
+
+            width: 100%;
+
+            padding: 13px;
+
+            border:
+                1px solid #d0d5dd;
+
+            border-radius: 9px;
+
+            font-size: 15px;
+        }
+
+        button {
+
+            width: 100%;
+
+            margin-top: 25px;
+
+            padding: 15px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #1465ff,
+                    #7b3cff
+                );
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+        .login {
+
+            text-align: center;
+
+            margin-top: 22px;
+
+            color: #667085;
+        }
+
+        .login a {
+
+            color: #2563eb;
+
+            font-weight: 700;
+
+            text-decoration: none;
+        }
+
+        @media(max-width: 600px) {
+
+            .row {
+
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="card">
+
+
+    <div class="logo">
+
+        🛡️ INSURE
+        <span>AI</span>
+
+    </div>
+
+
+    <h1>
+        Create Account
+    </h1>
+
+
+    <p class="subtitle">
+        Register to use INSURE AI
+    </p>
+
+
+    {% if error %}
+
+    <div class="error">
+        {{ error }}
+    </div>
+
+    {% endif %}
+
+
+    <form
+        method="POST"
+        action="{{ url_for('register') }}"
+    >
+
+
+        <div class="row">
+
+            <div>
+
+                <label>
+                    First Name
+                </label>
+
+                <input
+                    type="text"
+                    name="first_name"
+                    placeholder="First name"
+                    required
+                >
+
+            </div>
+
+
+            <div>
+
+                <label>
+                    Last Name
+                </label>
+
+                <input
+                    type="text"
+                    name="last_name"
+                    placeholder="Last name"
+                    required
+                >
+
+            </div>
+
+        </div>
+
+
+        <label>
+            Email
+        </label>
+
+        <input
+            type="email"
+            name="email"
+            placeholder="Enter email"
+            required
+        >
+
+
+        <label>
+            Password
+        </label>
+
+        <input
+            type="password"
+            name="password"
+            placeholder="Create password"
+            required
+        >
+
+
+        <label>
+            Confirm Password
+        </label>
+
+        <input
+            type="password"
+            name="confirm_password"
+            placeholder="Confirm password"
+            required
+        >
+
+
+        <button type="submit">
+            Create Account →
+        </button>
+
+
+    </form>
+
+
+    <div class="login">
+
+        Already have an account?
+
+        <a href="{{ url_for('login') }}">
+            Login
+        </a>
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>

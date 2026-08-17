@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Settings | INSURE AI</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/dashboard.css') }}"
+    >
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7fc;
+            color: #102a56;
+        }
+
+        .settings-page {
+            min-height: 100vh;
+            padding: 40px;
+        }
+
+        .settings-container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        /* HEADER */
+
+        .page-header {
+            background: white;
+            border-radius: 22px;
+            padding: 30px 35px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 30px rgba(20, 50, 100, 0.07);
+        }
+
+        .page-header .label {
+            color: #276cff;
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .page-header h1 {
+            margin: 0;
+            font-size: 34px;
+            font-weight: 800;
+            color: #09234d;
+        }
+
+        .page-header p {
+            margin: 10px 0 0;
+            color: #6c7b94;
+            font-size: 16px;
+        }
+
+        /* CARD */
+
+        .settings-card {
+            background: white;
+            border-radius: 22px;
+            padding: 32px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 30px rgba(20, 50, 100, 0.07);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 25px;
+        }
+
+        .section-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            background: #eaf1ff;
+            color: #276cff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+        }
+
+        .section-title h2 {
+            margin: 0;
+            font-size: 21px;
+            color: #102a56;
+        }
+
+        .section-title p {
+            margin: 4px 0 0;
+            color: #7a879b;
+            font-size: 14px;
+        }
+
+        /* ACCOUNT */
+
+        .account-box {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            background: #f7f9fd;
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .avatar {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #276cff, #1456d9);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .account-info h3 {
+            margin: 0 0 5px;
+            font-size: 18px;
+        }
+
+        .account-info p {
+            margin: 0;
+            color: #75839a;
+            font-size: 14px;
+        }
+
+        /* SETTINGS ROW */
+
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #edf0f5;
+        }
+
+        .setting-row:last-child {
+            border-bottom: none;
+        }
+
+        .setting-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .setting-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: #f0f4fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #276cff;
+            font-size: 18px;
+        }
+
+        .setting-text h3 {
+            margin: 0 0 4px;
+            font-size: 16px;
+            color: #19345e;
+        }
+
+        .setting-text p {
+            margin: 0;
+            color: #7c899d;
+            font-size: 13px;
+        }
+
+        /* TOGGLE */
+
+        .toggle {
+            position: relative;
+            width: 52px;
+            height: 28px;
+        }
+
+        .toggle input {
+            display: none;
+        }
+
+        .slider {
+            position: absolute;
+            inset: 0;
+            cursor: pointer;
+            background: #cbd3df;
+            border-radius: 30px;
+            transition: 0.3s;
+        }
+
+        .slider:before {
+            content: "";
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            left: 3px;
+            top: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .toggle input:checked + .slider {
+            background: #276cff;
+        }
+
+        .toggle input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        /* SELECT */
+
+        .select-box {
+            padding: 10px 14px;
+            border: 1px solid #dce3ee;
+            border-radius: 10px;
+            background: white;
+            color: #263b5d;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .select-box:focus {
+            border-color: #276cff;
+        }
+
+        /* SECURITY */
+
+        .security-button {
+            border: 1px solid #dce3ee;
+            background: white;
+            color: #19345e;
+            padding: 10px 17px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .security-button:hover {
+            background: #f4f7ff;
+            border-color: #276cff;
+            color: #276cff;
+        }
+
+        /* LOGOUT */
+
+        .logout-section {
+            background: #fff6f6;
+            border: 1px solid #ffe0e0;
+        }
+
+        .logout-section .setting-icon {
+            background: #ffeaea;
+            color: #e04444;
+        }
+
+        .logout-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            background: #e54848;
+            color: white;
+            padding: 11px 18px;
+            border-radius: 10px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+        .logout-button:hover {
+            background: #c93636;
+            color: white;
+        }
+
+        /* FOOTER */
+
+        .footer {
+            text-align: center;
+            color: #8a96a8;
+            font-size: 13px;
+            padding: 20px;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 768px) {
+
+            .settings-page {
+                padding: 20px;
+            }
+
+            .page-header {
+                padding: 25px;
+            }
+
+            .page-header h1 {
+                font-size: 28px;
+            }
+
+            .settings-card {
+                padding: 22px;
+            }
+
+            .setting-row {
+                gap: 15px;
+            }
+
+            .setting-left {
+                flex: 1;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="settings-page">
+
+    <div class="settings-container">
+
+        <!-- HEADER -->
+
+        <div class="page-header">
+
+            <div class="label">
+                ACCOUNT SETTINGS
+            </div>
+
+            <h1>
+                Settings
+            </h1>
+
+            <p>
+                Manage your INSURE AI account and application preferences.
+            </p>
+
+        </div>
+
+
+        <!-- ACCOUNT -->
+
+        <div class="settings-card">
+
+            <div class="section-title">
+
+                <div class="section-icon">
+                    <i class="bi bi-person"></i>
+                </div>
+
+                <div>
+                    <h2>Account</h2>
+
+                    <p>
+                        Your account information
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="account-box">
+
+                <div class="avatar">
+
+                    {{ user.first_name[0] if user and user.first_name else 'M' }}
+
+                </div>
+
+
+                <div class="account-info">
+
+                    <h3>
+
+                        {{ user.first_name if user and user.first_name else 'Meghana' }}
+
+                        {{ user.last_name if user and user.last_name else 'Badugu' }}
+
+                    </h3>
+
+                    <p>
+
+                        {{ user.email if user and user.email else 'meghanabadugu14@gmail.com' }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- NOTIFICATIONS -->
+
+        <div class="settings-card">
+
+            <div class="section-title">
+
+                <div class="section-icon">
+                    <i class="bi bi-bell"></i>
+                </div>
+
+                <div>
+
+                    <h2>Notifications</h2>
+
+                    <p>
+                        Control how INSURE AI keeps you informed.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="setting-row">
+
+                <div class="setting-left">
+
+                    <div class="setting-icon">
+                        <i class="bi bi-envelope"></i>
+                    </div>
+
+                    <div class="setting-text">
+
+                        <h3>Email Notifications</h3>
+
+                        <p>
+                            Receive updates about your insurance claims.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <label class="toggle">
+
+                    <input
+                        type="checkbox"
+                        checked
+                    >
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+
+            <div class="setting-row">
+
+                <div class="setting-left">
+
+                    <div class="setting-icon">
+                        <i class="bi bi-file-earmark-check"></i>
+                    </div>
+
+                    <div class="setting-text">
+
+                        <h3>Claim Updates</h3>
+
+                        <p>
+                            Get notified when your claim status changes.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <label class="toggle">
+
+                    <input
+                        type="checkbox"
+                        checked
+                    >
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+
+            <div class="setting-row">
+
+                <div class="setting-left">
+
+                    <div class="setting-icon">
+                        <i class="bi bi-robot"></i>
+                    </div>
+
+                    <div class="setting-text">
+
+                        <h3>AI Assessment Notifications</h3>
+
+                        <p>
+                            Receive notifications when AI assessment is completed.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <label class="toggle">
+
+                    <input
+                        type="checkbox"
+                        checked
+                    >
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <!-- PREFERENCES -->
+
+        <div class="settings-card">
+
+            <div class="section-title">
+
+                <div class="section-icon">
+                    <i class="bi bi-sliders"></i>
+                </div>
+
+                <div>
+
+                    <h2>Preferences</h2>
+
+                    <p>
+                        Customize your INSURE AI experience.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="setting-row">
+
+                <div class="setting-left">
+
+                    <div class="setting-icon">
+                        <i class="bi bi-translate"></i>
+                    </div>
+
+                    <div class="setting-text">
+
+                        <h3>Language</h3>
+
+                        <p>
+                            Choose your preferred application language.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <select class="select-box">
+
+                    <option selected>
+                        English
+                    </option>
+
+                    <option>
+                        Telugu
+                    </option>
+
+                    <option>
+                        Hindi
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="setting-row">
+
+                <div class="setting-left">
+
+                    <div class="setting-icon">
+                        <i class="bi bi-moon"></i>
+                    </div>
+
+                    <div class="setting-text">
+
+                        <h3>Dark Mode</h3>
+
+                        <p>
+                            Use a darker interface for low-light environments.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <label class="toggle">
+
+                    <input
+                        type="checkbox"
+                        id="darkModeToggle"
+                    >
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <!-- SECURITY -->
+
+        <div class="settings-card">
+
+            <div class="section-title">
+
+                <div class="section-icon">
+                    <i class="bi bi-shield-lock"></i>
+                </div>
+
+                <div>
+
+                    <h2>Security</h2>
+
+                    <p>
+                        Manage your account security.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="setting-row">
+
+                <div class="setting-left">
+
+                    <div class="setting-icon">
+                        <i class="bi bi-key"></i>
+                    </div>
+
+                    <div class="setting-text">
+
+                        <h3>Password</h3>
+
+                        <p>
+                            Keep your account secure with a strong password.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="security-button"
+                    type="button"
+                    onclick="alert('Password change feature will be added soon.')"
+                >
+
+                    Change Password
+
+                </button>
+
+            </div>
+
+
+            <div class="setting-row">
+
+                <div class="setting-left">
+
+                    <div class="setting-icon">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+
+                    <div class="setting-text">
+
+                        <h3>Account Protection</h3>
+
+                        <p>
+                            Your INSURE AI session is protected.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <strong style="color:#1fa463;">
+                    Active
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- LOGOUT -->
+
+        <div class="settings-card logout-section">
+
+            <div class="section-title">
+
+                <div class="section-icon">
+                    <i class="bi bi-box-arrow-right"></i>
+                </div>
+
+                <div>
+
+                    <h2>Sign Out</h2>
+
+                    <p>
+                        Sign out from your INSURE AI account.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="setting-row">
+
+                <div class="setting-left">
+
+                    <div class="setting-icon">
+                        <i class="bi bi-person-x"></i>
+                    </div>
+
+                    <div class="setting-text">
+
+                        <h3>Logout</h3>
+
+                        <p>
+                            You will need to login again to access your dashboard.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <a
+                    href="{{ url_for('logout') }}"
+                    class="logout-button"
+                >
+
+                    <i class="bi bi-box-arrow-right"></i>
+
+                    Logout
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer">
+
+            © 2026 INSURE AI · AI-Powered Insurance Platform
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    const darkModeToggle =
+        document.getElementById("darkModeToggle");
+
+    darkModeToggle.addEventListener(
+        "change",
+        function () {
+
+            if (this.checked) {
+
+                document.body.style.background = "#101827";
+                document.body.style.color = "#ffffff";
+
+                document
+                    .querySelectorAll(".settings-card, .page-header")
+                    .forEach(function(card) {
+
+                        card.style.background = "#172235";
+                        card.style.color = "#ffffff";
+
+                    });
+
+            } else {
+
+                document.body.style.background = "#f4f7fc";
+                document.body.style.color = "#102a56";
+
+                document
+                    .querySelectorAll(".settings-card, .page-header")
+                    .forEach(function(card) {
+
+                        card.style.background = "white";
+
+                    });
+
+            }
+
+        }
+    );
+
+</script>
+
+</body>
+</html>

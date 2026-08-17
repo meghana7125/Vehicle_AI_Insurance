@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>INSURE AI | Intelligent Vehicle Damage Assessment</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+
+            font-family: "Inter", Arial, sans-serif;
+
+            background: #020817;
+
+            color: white;
+
+            overflow-x: hidden;
+
+        }
+
+
+        /* =====================================================
+           NAVBAR
+        ===================================================== */
+
+        .navbar-main {
+
+            height: 112px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 6%;
+
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+
+            background: rgba(2,8,23,0.96);
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 1000;
+
+        }
+
+
+        .logo {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+
+            text-decoration: none;
+
+            color: white;
+
+            font-size: 28px;
+
+            font-weight: 800;
+
+        }
+
+
+        .logo-icon {
+
+            width: 50px;
+
+            height: 50px;
+
+            border: 2px solid #00d9ff;
+
+            border-radius: 14px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            color: #00d9ff;
+
+            font-size: 25px;
+
+            box-shadow: 0 0 20px rgba(0,217,255,0.35);
+
+        }
+
+
+        .logo-ai {
+
+            color: #168cff;
+
+        }
+
+
+        .nav-links {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 48px;
+
+        }
+
+
+        .nav-links a {
+
+            color: #aab6ca;
+
+            text-decoration: none;
+
+            font-size: 16px;
+
+            font-weight: 600;
+
+            transition: 0.3s;
+
+        }
+
+
+        .nav-links a:hover {
+
+            color: #20cfff;
+
+        }
+
+
+        .login-btn {
+
+            padding: 14px 27px;
+
+            border: 1px solid rgba(255,255,255,0.2);
+
+            border-radius: 14px;
+
+            color: white !important;
+
+        }
+
+
+        .login-btn:hover {
+
+            border-color: #00cfff;
+
+            background: rgba(0,207,255,0.08);
+
+        }
+
+
+        /* =====================================================
+           HERO
+        ===================================================== */
+
+        .hero {
+
+            min-height: 760px;
+
+            position: relative;
+
+            display: flex;
+
+            align-items: center;
+
+            padding: 80px 6%;
+
+            overflow: hidden;
+
+            background:
+
+                radial-gradient(
+                    circle at 75% 55%,
+                    rgba(0,125,255,0.12),
+                    transparent 35%
+                ),
+
+                #020817;
+
+        }
+
+
+        .hero::before {
+
+            content: "";
+
+            position: absolute;
+
+            inset: 0;
+
+            background-image:
+
+                linear-gradient(
+                    rgba(255,255,255,0.025) 1px,
+                    transparent 1px
+                ),
+
+                linear-gradient(
+                    90deg,
+                    rgba(255,255,255,0.025) 1px,
+                    transparent 1px
+                );
+
+            background-size: 70px 70px;
+
+            pointer-events: none;
+
+        }
+
+
+        .hero-container {
+
+            width: 100%;
+
+            max-width: 1500px;
+
+            margin: auto;
+
+            display: grid;
+
+            grid-template-columns: 45% 55%;
+
+            align-items: center;
+
+            position: relative;
+
+            z-index: 2;
+
+        }
+
+
+        .hero-left {
+
+            padding-right: 35px;
+
+        }
+
+
+        .hero-badge {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 13px 22px;
+
+            border: 1px solid rgba(0,207,255,0.5);
+
+            border-radius: 30px;
+
+            color: #20d7ff;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            letter-spacing: 1.5px;
+
+            margin-bottom: 35px;
+
+            background: rgba(0,207,255,0.04);
+
+        }
+
+
+        .hero-dot {
+
+            width: 9px;
+
+            height: 9px;
+
+            background: #1bd7ff;
+
+            border-radius: 50%;
+
+            box-shadow: 0 0 15px #1bd7ff;
+
+        }
+
+
+        .hero-title {
+
+            font-size: clamp(55px, 5vw, 86px);
+
+            line-height: 1.02;
+
+            font-weight: 800;
+
+            letter-spacing: -3px;
+
+            margin-bottom: 35px;
+
+        }
+
+
+        .hero-title .blue {
+
+            color: #12bdf3;
+
+        }
+
+
+        .hero-description {
+
+            max-width: 680px;
+
+            color: #9aa9c0;
+
+            font-size: 20px;
+
+            line-height: 1.7;
+
+            margin-bottom: 40px;
+
+        }
+
+
+        .hero-buttons {
+
+            display: flex;
+
+            gap: 18px;
+
+            flex-wrap: wrap;
+
+        }
+
+
+        .start-btn {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 18px;
+
+            padding: 18px 30px;
+
+            border-radius: 13px;
+
+            text-decoration: none;
+
+            color: white;
+
+            font-weight: 700;
+
+            font-size: 17px;
+
+            background:
+
+                linear-gradient(
+                    90deg,
+                    #176cff,
+                    #10bce9
+                );
+
+            box-shadow:
+
+                0 12px 35px
+                rgba(0,130,255,0.3);
+
+            transition: 0.3s;
+
+        }
+
+
+        .start-btn:hover {
+
+            transform: translateY(-3px);
+
+            color: white;
+
+            box-shadow:
+
+                0 18px 40px
+                rgba(0,160,255,0.4);
+
+        }
+
+
+        .how-btn {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 18px 28px;
+
+            border: 1px solid rgba(255,255,255,0.15);
+
+            border-radius: 13px;
+
+            text-decoration: none;
+
+            color: #d8e0ed;
+
+            font-weight: 600;
+
+            font-size: 17px;
+
+        }
+
+
+        .how-btn:hover {
+
+            color: white;
+
+            border-color: #168cff;
+
+            background: rgba(255,255,255,0.04);
+
+        }
+
+
+        /* =====================================================
+           HERO IMAGE
+        ===================================================== */
+
+        .hero-right {
+
+            position: relative;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+        }
+
+
+        .hero-image {
+
+            width: 100%;
+
+            max-width: 850px;
+
+            border-radius: 5px;
+
+            display: block;
+
+            box-shadow:
+
+                0 0 80px
+                rgba(0,150,255,0.16);
+
+        }
+
+
+        .floating-card {
+
+            position: absolute;
+
+            background: rgba(7,20,40,0.95);
+
+            border: 1px solid rgba(255,255,255,0.12);
+
+            border-radius: 18px;
+
+            padding: 18px 25px;
+
+            backdrop-filter: blur(15px);
+
+            box-shadow:
+
+                0 20px 50px
+                rgba(0,0,0,0.4);
+
+        }
+
+
+        .detection-card {
+
+            top: 40px;
+
+            right: -5px;
+
+            min-width: 245px;
+
+        }
+
+
+        .repair-card {
+
+            bottom: 20px;
+
+            left: 0;
+
+            min-width: 280px;
+
+        }
+
+
+        .floating-label {
+
+            color: #71819a;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            letter-spacing: 2px;
+
+            margin-bottom: 8px;
+
+        }
+
+
+        .floating-title {
+
+            font-size: 18px;
+
+            font-weight: 700;
+
+        }
+
+
+        .floating-value {
+
+            font-size: 20px;
+
+            font-weight: 800;
+
+            margin-top: 5px;
+
+        }
+
+
+        .danger {
+
+            color: #ff6d83;
+
+        }
+
+
+        .green {
+
+            color: #00d99a;
+
+        }
+
+
+        /* =====================================================
+           STATS
+        ===================================================== */
+
+        .stats {
+
+            display: flex;
+
+            gap: 70px;
+
+            margin-top: 50px;
+
+        }
+
+
+        .stat h3 {
+
+            font-size: 28px;
+
+            font-weight: 800;
+
+        }
+
+
+        .stat p {
+
+            color: #7d8ba2;
+
+            margin-top: 5px;
+
+        }
+
+
+        /* =====================================================
+           SECTIONS
+        ===================================================== */
+
+        .section {
+
+            padding: 110px 6%;
+
+            background: #061020;
+
+        }
+
+
+        .section.dark {
+
+            background: #020817;
+
+        }
+
+
+        .section-title {
+
+            text-align: center;
+
+            font-size: 46px;
+
+            font-weight: 800;
+
+            margin-bottom: 18px;
+
+        }
+
+
+        .section-subtitle {
+
+            text-align: center;
+
+            color: #8998ae;
+
+            font-size: 18px;
+
+            max-width: 750px;
+
+            margin: 0 auto 60px;
+
+            line-height: 1.7;
+
+        }
+
+
+        /* =====================================================
+           SERVICE CARDS
+        ===================================================== */
+
+        .service-grid {
+
+            max-width: 1200px;
+
+            margin: auto;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 25px;
+
+        }
+
+
+        .service-card {
+
+            padding: 35px;
+
+            border-radius: 20px;
+
+            background: #09182b;
+
+            border: 1px solid rgba(255,255,255,0.08);
+
+            transition: 0.3s;
+
+        }
+
+
+        .service-card:hover {
+
+            transform: translateY(-7px);
+
+            border-color: rgba(0,200,255,0.5);
+
+            box-shadow:
+
+                0 20px 50px
+                rgba(0,120,255,0.12);
+
+        }
+
+
+        .service-icon {
+
+            font-size: 42px;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .service-card h3 {
+
+            font-size: 22px;
+
+            font-weight: 700;
+
+            margin-bottom: 15px;
+
+        }
+
+
+        .service-card p {
+
+            color: #8c9bb0;
+
+            line-height: 1.7;
+
+        }
+
+
+        /* =====================================================
+           AI MODELS
+        ===================================================== */
+
+        .model-box {
+
+            max-width: 1200px;
+
+            margin: auto;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 25px;
+
+        }
+
+
+        .model-card {
+
+            background: #071426;
+
+            border: 1px solid rgba(255,255,255,0.08);
+
+            border-radius: 20px;
+
+            padding: 35px;
+
+            text-align: center;
+
+        }
+
+
+        .model-card h3 {
+
+            color: #18c9ff;
+
+            font-size: 25px;
+
+            margin-bottom: 15px;
+
+        }
+
+
+        .model-card p {
+
+            color: #8998ae;
+
+            line-height: 1.7;
+
+        }
+
+
+        .active-badge {
+
+            display: inline-block;
+
+            margin-top: 20px;
+
+            padding: 7px 15px;
+
+            background: #087f4f;
+
+            border-radius: 20px;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+        }
+
+
+        /* =====================================================
+           WORKFLOW
+        ===================================================== */
+
+        .workflow {
+
+            max-width: 1200px;
+
+            margin: auto;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(5, 1fr);
+
+            gap: 20px;
+
+        }
+
+
+        .workflow-step {
+
+            text-align: center;
+
+            position: relative;
+
+        }
+
+
+        .workflow-number {
+
+            width: 60px;
+
+            height: 60px;
+
+            margin: 0 auto 20px;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background:
+
+                linear-gradient(
+                    135deg,
+                    #126cff,
+                    #10bfe8
+                );
+
+            font-size: 20px;
+
+            font-weight: 800;
+
+            box-shadow:
+
+                0 0 30px
+                rgba(0,180,255,0.25);
+
+        }
+
+
+        .workflow-step h4 {
+
+            font-size: 18px;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        .workflow-step p {
+
+            color: #8493aa;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        footer {
+
+            padding: 35px 6%;
+
+            text-align: center;
+
+            background: #010611;
+
+            color: #71819a;
+
+            border-top: 1px solid rgba(255,255,255,0.06);
+
+        }
+
+
+        footer strong {
+
+            color: white;
+
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media(max-width: 1100px) {
+
+            .hero-container {
+
+                grid-template-columns: 1fr;
+
+                gap: 60px;
+
+            }
+
+            .hero-left {
+
+                padding-right: 0;
+
+            }
+
+            .hero-title {
+
+                font-size: 65px;
+
+            }
+
+            .service-grid,
+            .model-box {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+            }
+
+            .workflow {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+            }
+
+        }
+
+
+        @media(max-width: 768px) {
+
+            .navbar-main {
+
+                height: auto;
+
+                padding: 20px;
+
+                flex-direction: column;
+
+                gap: 20px;
+
+            }
+
+            .nav-links {
+
+                gap: 18px;
+
+                flex-wrap: wrap;
+
+                justify-content: center;
+
+            }
+
+            .hero {
+
+                padding: 70px 20px;
+
+            }
+
+            .hero-title {
+
+                font-size: 50px;
+
+                letter-spacing: -2px;
+
+            }
+
+            .hero-description {
+
+                font-size: 17px;
+
+            }
+
+            .stats {
+
+                gap: 25px;
+
+                flex-wrap: wrap;
+
+            }
+
+            .service-grid,
+            .model-box,
+            .workflow {
+
+                grid-template-columns: 1fr;
+
+            }
+
+            .floating-card {
+
+                display: none;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     NAVBAR
+========================================================= -->
+
+<nav class="navbar-main">
+
+
+    <a href="{{ url_for('home') }}"
+       class="logo">
+
+        <span class="logo-icon">
+
+            🛡️
+
+        </span>
+
+        <span>
+            INSURE
+            <span class="logo-ai">AI</span>
+        </span>
+
+    </a>
+
+
+    <div class="nav-links">
+
+
+        <a href="{{ url_for('home') }}">
+            Home
+        </a>
+
+
+        <a href="#services">
+            Services
+        </a>
+
+
+        <a href="#models">
+            AI Models
+        </a>
+
+
+        <a href="#workflow">
+            Workflow
+        </a>
+
+
+        <a
+            href="{{ url_for('login') }}"
+            class="login-btn"
+        >
+            Login
+        </a>
+
+
+    </div>
+
+
+</nav>
+
+
+<!-- =========================================================
+     HERO
+========================================================= -->
+
+<section class="hero">
+
+
+    <div class="hero-container">
+
+
+        <div class="hero-left">
+
+
+            <div class="hero-badge">
+
+                <span class="hero-dot"></span>
+
+                AI-POWERED INSURANCE PLATFORM
+
+            </div>
+
+
+            <h1 class="hero-title">
+
+                Intelligent
+
+                <br>
+
+                <span class="blue">
+                    Vehicle Damage
+                </span>
+
+                <br>
+
+                Assessment
+
+            </h1>
+
+
+            <p class="hero-description">
+
+                Detect vehicle damage, analyze severity,
+                estimate repair costs and automate
+                insurance claims using Artificial Intelligence.
+
+            </p>
+
+
+            <div class="hero-buttons">
+
+
+                <a
+                    href="{{ url_for('login') }}"
+                    class="start-btn"
+                >
+
+                    Start Assessment
+
+                    <span>→</span>
+
+                </a>
+
+
+                <a
+                    href="#workflow"
+                    class="how-btn"
+                >
+
+                    ◉
+
+                    How It Works
+
+                </a>
+
+
+            </div>
+
+
+            <div class="stats">
+
+
+                <div class="stat">
+
+                    <h3>
+                        AI
+                    </h3>
+
+                    <p>
+                        Damage Detection
+                    </p>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <h3>
+                        &lt;10s
+                    </h3>
+
+                    <p>
+                        Analysis
+                    </p>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <h3>
+                        24/7
+                    </h3>
+
+                    <p>
+                        Availability
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+        <!-- RIGHT VISUAL -->
+
+        <div class="hero-right">
+
+
+            <img
+                src="{{ url_for('static', filename='images/vehicle-3d.png') }}"
+                class="hero-image"
+                alt="INSURE AI Vehicle Damage Assessment"
+            >
+
+
+            <div class="floating-card detection-card">
+
+                <div class="floating-label">
+                    AI DETECTION
+                </div>
+
+                <div class="floating-title danger">
+                    ⚠ Front Damage
+                </div>
+
+                <div class="floating-value">
+                    94.8% <span style="font-size:13px;color:#71819a;">confidence</span>
+                </div>
+
+            </div>
+
+
+            <div class="floating-card repair-card">
+
+                <div class="floating-label">
+                    ESTIMATED REPAIR
+                </div>
+
+                <div class="floating-value">
+                    ₹42,500
+                </div>
+
+                <div class="green">
+                    Moderate Damage
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+<!-- =========================================================
+     SERVICES
+========================================================= -->
+
+<section
+    class="section"
+    id="services"
+>
+
+
+    <h2 class="section-title">
+        Our Services
+    </h2>
+
+
+    <p class="section-subtitle">
+
+        INSURE AI uses artificial intelligence
+        to simplify vehicle damage assessment
+        and insurance claim processing.
+
+    </p>
+
+
+    <div class="service-grid">
+
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                🔍
+            </div>
+
+            <h3>
+                Damage Detection
+            </h3>
+
+            <p>
+                Upload a vehicle image and
+                automatically identify visible
+                vehicle damage using AI.
+            </p>
+
+        </div>
+
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                💰
+            </div>
+
+            <h3>
+                Cost Estimation
+            </h3>
+
+            <p>
+                Estimate approximate vehicle
+                repair costs based on the
+                detected damage severity.
+            </p>
+
+        </div>
+
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                📋
+            </div>
+
+            <h3>
+                Claim Assessment
+            </h3>
+
+            <p>
+                Generate an AI-based assessment
+                that can support the insurance
+                claim process.
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+<!-- =========================================================
+     AI MODELS
+========================================================= -->
+
+<section
+    class="section dark"
+    id="models"
+>
+
+
+    <h2 class="section-title">
+        AI Models
+    </h2>
+
+
+    <p class="section-subtitle">
+
+        Computer vision models are used to
+        analyze vehicle images and identify damage.
+
+    </p>
+
+
+    <div class="model-box">
+
+
+        <div class="model-card">
+
+            <h3>
+                YOLO11
+            </h3>
+
+            <p>
+
+                Fast object detection model
+                used for real-time vehicle
+                damage detection.
+
+            </p>
+
+            <span class="active-badge">
+                ACTIVE
+            </span>
+
+        </div>
+
+
+        <div class="model-card">
+
+            <h3>
+                Computer Vision
+            </h3>
+
+            <p>
+
+                Processes uploaded vehicle
+                images and extracts visual
+                damage information.
+
+            </p>
+
+        </div>
+
+
+        <div class="model-card">
+
+            <h3>
+                AI Analysis
+            </h3>
+
+            <p>
+
+                Converts detection results
+                into severity and approximate
+                repair-cost information.
+
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+<!-- =========================================================
+     WORKFLOW
+========================================================= -->
+
+<section
+    class="section"
+    id="workflow"
+>
+
+
+    <h2 class="section-title">
+        How INSURE AI Works
+    </h2>
+
+
+    <p class="section-subtitle">
+
+        A simple AI-powered workflow from
+        vehicle image upload to claim assessment.
+
+    </p>
+
+
+    <div class="workflow">
+
+
+        <div class="workflow-step">
+
+            <div class="workflow-number">
+                1
+            </div>
+
+            <h4>
+                Upload Image
+            </h4>
+
+            <p>
+                Customer uploads a vehicle
+                damage image.
+            </p>
+
+        </div>
+
+
+        <div class="workflow-step">
+
+            <div class="workflow-number">
+                2
+            </div>
+
+            <h4>
+                AI Detection
+            </h4>
+
+            <p>
+                YOLO11 analyzes the image
+                for visible damage.
+            </p>
+
+        </div>
+
+
+        <div class="workflow-step">
+
+            <div class="workflow-number">
+                3
+            </div>
+
+            <h4>
+                Severity
+            </h4>
+
+            <p>
+                The system determines the
+                damage severity.
+            </p>
+
+        </div>
+
+
+        <div class="workflow-step">
+
+            <div class="workflow-number">
+                4
+            </div>
+
+            <h4>
+                Cost Estimate
+            </h4>
+
+            <p>
+                An approximate repair cost
+                is calculated.
+            </p>
+
+        </div>
+
+
+        <div class="workflow-step">
+
+            <div class="workflow-number">
+                5
+            </div>
+
+            <h4>
+                Claim Assessment
+            </h4>
+
+            <p>
+                Results are presented for
+                insurance claim assessment.
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer>
+
+    <strong>INSURE AI</strong>
+
+    &nbsp; | &nbsp;
+
+    Intelligent. Accurate. Automated.
+
+    <br><br>
+
+    © 2026 INSURE AI
+
+</footer>
+
+
+</body>
+
+</html>

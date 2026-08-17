@@ -1,0 +1,577 @@
+import os
+from ultralytics import YOLO
+
+
+# ============================================================
+# BASE DIRECTORY
+# ============================================================
+
+BASE_DIR = os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__))
+)
+
+
+# ============================================================
+# MODEL PATHS
+# ============================================================
+
+PARTS_MODEL_PATH = os.path.join(
+    BASE_DIR,
+    "model",
+    "car_parts_best.pt"
+)
+
+DAMAGE_MODEL_PATH = os.path.join(
+    BASE_DIR,
+    "runs",
+    "detect",
+    "runs",
+    "vehicle_damage",
+    "weights",
+    "best.pt"
+)
+
+
+# ============================================================
+# CHECK MODELS
+# ============================================================
+
+if not os.path.exists(PARTS_MODEL_PATH):
+    raise FileNotFoundError(
+        f"CAR PARTS MODEL NOT FOUND:\n{PARTS_MODEL_PATH}"
+    )
+
+if not os.path.exists(DAMAGE_MODEL_PATH):
+    raise FileNotFoundError(
+        f"DAMAGE MODEL NOT FOUND:\n{DAMAGE_MODEL_PATH}"
+    )
+
+
+# ============================================================
+# LOAD MODELS
+# ============================================================
+
+print("Loading vehicle parts model...")
+parts_model = YOLO(PARTS_MODEL_PATH)
+
+print("Loading vehicle damage model...")
+damage_model = YOLO(DAMAGE_MODEL_PATH)
+
+print("Vehicle models loaded successfully.")
+
+print("Parts classes:")
+print(parts_model.names)
+
+print("Damage classes:")
+print(damage_model.names)
+
+
+# ============================================================
+# IOU
+# ============================================================
+
+def calculate_iou(box1, box2):
+
+    x1 = max(float(box1[0]), float(box2[0]))
+    y1 = max(float(box1[1]), float(box2[1]))
+
+    x2 = min(float(box1[2]), float(box2[2]))
+    y2 = min(float(box1[3]), float(box2[3]))
+
+    intersection_width = max(0.0, x2 - x1)
+    intersection_height = max(0.0, y2 - y1)
+
+    intersection = (
+        intersection_width *
+        intersection_height
+    )
+
+    area1 = (
+        max(0.0, float(box1[2]) - float(box1[0])) *
+        max(0.0, float(box1[3]) - float(box1[1]))
+    )
+
+    area2 = (
+        max(0.0, float(box2[2]) - float(box2[0])) *
+        max(0.0, float(box2[3]) - float(box2[1]))
+    )
+
+    union = area1 + area2 - intersection
+
+    if union <= 0:
+        return 0.0
+
+    return intersection / union
+
+
+# ============================================================
+# BOX CENTER
+# ============================================================
+
+def box_center(box):
+
+    x1, y1, x2, y2 = box
+
+    return (
+        (x1 + x2) / 2.0,
+        (y1 + y2) / 2.0
+    )
+
+
+# ============================================================
+# CHECK WHETHER CENTER OF DAMAGE IS INSIDE PART
+# ============================================================
+
+def center_inside_box(damage_box, part_box):
+
+    cx, cy = box_center(damage_box)
+
+    px1, py1, px2, py2 = part_box
+
+    return (
+        px1 <= cx <= px2
+        and
+        py1 <= cy <= py2
+    )
+
+
+# ============================================================
+# OVERLAP RATIO
+#
+# How much of the DAMAGE box is inside the PART box.
+# This is useful because a small damage box can have low IoU
+# with a large car-part box even when the damage is actually
+# located on that part.
+# ============================================================
+
+def damage_inside_part_ratio(damage_box, part_box):
+
+    x1 = max(float(damage_box[0]), float(part_box[0]))
+    y1 = max(float(damage_box[1]), float(part_box[1]))
+
+    x2 = min(float(damage_box[2]), float(part_box[2]))
+    y2 = min(float(damage_box[3]), float(part_box[3]))
+
+    width = max(0.0, x2 - x1)
+    height = max(0.0, y2 - y1)
+
+    intersection = width * height
+
+    damage_area = (
+        max(0.0, float(damage_box[2]) - float(damage_box[0])) *
+        max(0.0, float(damage_box[3]) - float(damage_box[1]))
+    )
+
+    if damage_area <= 0:
+        return 0.0
+
+    return intersection / damage_area
+
+
+# ============================================================
+# RUN VEHICLE ASSESSMENT
+# ============================================================
+
+def run_vehicle_assessment(image_path):
+
+    if not image_path:
+        raise ValueError("Image path is empty.")
+
+    if not os.path.exists(image_path):
+        raise FileNotFoundError(
+            f"Image not found:\n{image_path}"
+        )
+
+    # ========================================================
+    # 1. DETECT CAR PARTS
+    # ========================================================
+
+    part_result = parts_model.predict(
+        source=image_path,
+        conf=0.20,
+        iou=0.50,
+        imgsz=1536,
+        max_det=50,
+        verbose=False
+    )[0]
+
+    parts = []
+
+    if part_result.boxes is not None:
+
+        for box, conf, cls in zip(
+            part_result.boxes.xyxy,
+            part_result.boxes.conf,
+            part_result.boxes.cls
+        ):
+
+            confidence = float(conf)
+            class_id = int(cls)
+
+            if confidence < 0.20:
+                continue
+
+            coords = [
+                float(box[0]),
+                float(box[1]),
+                float(box[2]),
+                float(box[3])
+            ]
+
+            class_name = parts_model.names.get(
+                class_id,
+                str(class_id)
+            )
+
+            parts.append({
+                "name": class_name,
+                "confidence": round(confidence, 4),
+                "box": coords
+            })
+
+    # ========================================================
+    # 2. DETECT DAMAGE
+    # ========================================================
+
+    damage_result = damage_model.predict(
+        source=image_path,
+        conf=0.15,
+        iou=0.50,
+        imgsz=1536,
+        max_det=30,
+        verbose=False
+    )[0]
+
+    damage_boxes = []
+
+    if damage_result.boxes is not None:
+
+        for box, conf, cls in zip(
+            damage_result.boxes.xyxy,
+            damage_result.boxes.conf,
+            damage_result.boxes.cls
+        ):
+
+            confidence = float(conf)
+            class_id = int(cls)
+
+            # ------------------------------------------------
+            # YOUR DAMAGE MODEL:
+            #
+            # class 0 = damage
+            #
+            # Ignore other classes.
+            # ------------------------------------------------
+
+            if class_id != 0:
+                continue
+
+            if confidence < 0.15:
+                continue
+
+            coords = [
+                float(box[0]),
+                float(box[1]),
+                float(box[2]),
+                float(box[3])
+            ]
+
+            damage_boxes.append({
+                "confidence": round(confidence, 4),
+                "box": coords
+            })
+
+    # ========================================================
+    # 3. MATCH DAMAGE TO CAR PARTS
+    # ========================================================
+
+    damaged_parts = []
+
+    for part in parts:
+
+        best_score = 0.0
+        best_damage_confidence = 0.0
+        best_iou = 0.0
+        best_inside_ratio = 0.0
+
+        for damage in damage_boxes:
+
+            damage_box = damage["box"]
+            part_box = part["box"]
+
+            # -----------------------------------------------
+            # IOU
+            # -----------------------------------------------
+
+            iou = calculate_iou(
+                part_box,
+                damage_box
+            )
+
+            # -----------------------------------------------
+            # DAMAGE INSIDE PART RATIO
+            # -----------------------------------------------
+
+            inside_ratio = damage_inside_part_ratio(
+                damage_box,
+                part_box
+            )
+
+            # -----------------------------------------------
+            # DAMAGE CENTER INSIDE PART
+            # -----------------------------------------------
+
+            center_inside = center_inside_box(
+                damage_box,
+                part_box
+            )
+
+            # -----------------------------------------------
+            # MATCH SCORE
+            #
+            # IoU is useful, but car parts are often much
+            # larger than the actual damaged area.
+            #
+            # Therefore use:
+            #
+            # IoU
+            # + damage-inside-part ratio
+            # + center location
+            # -----------------------------------------------
+
+            score = (
+                (iou * 0.40)
+                +
+                (inside_ratio * 0.40)
+                +
+                (0.20 if center_inside else 0.0)
+            )
+
+            if score > best_score:
+
+                best_score = score
+                best_damage_confidence = damage["confidence"]
+                best_iou = iou
+                best_inside_ratio = inside_ratio
+
+        # ====================================================
+        # ACCEPT DAMAGE/PART MATCH
+        # ====================================================
+
+        # More flexible than IoU >= 0.10 alone.
+        #
+        # This helps when:
+        #   damaged light
+        #   bumper
+        #   door
+        #   mirror
+        #
+        # has a relatively small damage box inside a larger
+        # detected car part.
+        # ====================================================
+
+        if (
+            best_iou >= 0.05
+            or
+            best_inside_ratio >= 0.15
+            or
+            best_score >= 0.15
+        ):
+
+            damaged_parts.append({
+
+                "name": part["name"],
+
+                "part_confidence": round(
+                    part["confidence"],
+                    4
+                ),
+
+                "damage_confidence": round(
+                    best_damage_confidence,
+                    4
+                ),
+
+                "overlap": round(
+                    best_iou,
+                    4
+                ),
+
+                "damage_inside_part": round(
+                    best_inside_ratio,
+                    4
+                ),
+
+                "match_score": round(
+                    best_score,
+                    4
+                )
+            })
+
+    # ========================================================
+    # 4. REMOVE DUPLICATE PART NAMES
+    # ========================================================
+
+    unique_parts = {}
+
+    for item in damaged_parts:
+
+        name = item["name"]
+
+        # Combined score
+        score = (
+            item["damage_confidence"]
+            *
+            (
+                item["match_score"]
+                +
+                item["damage_inside_part"]
+            )
+        )
+
+        if (
+            name not in unique_parts
+            or
+            score > unique_parts[name]["_score"]
+        ):
+
+            unique_parts[name] = {
+                **item,
+                "_score": score
+            }
+
+    damaged_parts = []
+
+    for item in unique_parts.values():
+
+        item.pop("_score", None)
+
+        damaged_parts.append(item)
+
+    # ========================================================
+    # 5. SORT DAMAGED PARTS
+    # ========================================================
+
+    damaged_parts.sort(
+        key=lambda x: (
+            x["damage_confidence"]
+            *
+            x["match_score"]
+        ),
+        reverse=True
+    )
+
+    # ========================================================
+    # 6. FINAL DAMAGE STATUS
+    # ========================================================
+
+    if len(damage_boxes) == 0:
+
+        damage_status = "No damage detected"
+
+        ai_confidence = 0.0
+
+    elif len(damaged_parts) == 0:
+
+        damage_status = (
+            "Damage detected but damaged part "
+            "could not be reliably identified"
+        )
+
+        ai_confidence = max(
+            x["confidence"]
+            for x in damage_boxes
+        ) * 100.0
+
+    else:
+
+        damage_status = "Damage Detected"
+
+        # Overall confidence should consider both
+        # damage detection and part matching.
+
+        confidence_values = []
+
+        for item in damaged_parts:
+
+            value = (
+                item["damage_confidence"]
+                *
+                max(
+                    item["match_score"],
+                    0.25
+                )
+            )
+
+            confidence_values.append(value)
+
+        if confidence_values:
+
+            ai_confidence = max(
+                confidence_values
+            ) * 100.0
+
+        else:
+
+            ai_confidence = (
+                max(
+                    x["confidence"]
+                    for x in damage_boxes
+                )
+                *
+                100.0
+            )
+
+    # ========================================================
+    # 7. RETURN RESULT
+    # ========================================================
+
+    return {
+
+        "parts_detected": parts,
+
+        "damaged_parts": damaged_parts,
+
+        "damage_boxes": damage_boxes,
+
+        "damage_status": damage_status,
+
+        "ai_confidence": round(
+            min(ai_confidence, 100.0),
+            2
+        ),
+
+        "total_parts_detected": len(parts),
+
+        "total_damage_boxes": len(damage_boxes),
+
+        "total_damaged_parts": len(damaged_parts)
+    }
+
+
+# ============================================================
+# SIMPLE TEST
+# ============================================================
+
+if __name__ == "__main__":
+
+    print()
+    print("=" * 60)
+    print("VEHICLE DAMAGE ASSESSMENT MODEL TEST")
+    print("=" * 60)
+
+    print()
+    print("Parts model:")
+    print(PARTS_MODEL_PATH)
+
+    print()
+    print("Damage model:")
+    print(DAMAGE_MODEL_PATH)
+
+    print()
+    print("Both models loaded successfully.")
+    print()
+    print("You can now import:")
+    print()
+    print("from utils.vehicle_assessment import run_vehicle_assessment")
+    print()

@@ -1,0 +1,2027 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        INSURE AI | Insurance Claim Assessment Report
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --navy: #0b1f35;
+            --navy-2: #12395d;
+            --blue: #087cff;
+            --blue-light: #eef6ff;
+
+            --text: #182536;
+            --muted: #68778b;
+            --border: #dfe6ee;
+            --background: #f3f6fa;
+            --white: #ffffff;
+
+            --red: #c62828;
+            --red-bg: #fff0f0;
+
+            --green: #16804b;
+            --green-bg: #eaf8f0;
+
+            --orange: #a96700;
+            --orange-bg: #fff7e5;
+        }
+
+        body {
+            margin: 0;
+            background: var(--background);
+            color: var(--text);
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+        }
+
+        .page {
+            max-width: 1180px;
+            margin: 30px auto;
+            padding: 0 20px 60px;
+        }
+
+        /* =====================================================
+           TOP HEADER
+        ===================================================== */
+
+        .report-header {
+            background: var(--white);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+
+            padding: 25px 30px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            box-shadow:
+                0 8px 30px rgba(15, 40, 70, 0.06);
+
+            margin-bottom: 18px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 56px;
+            height: 56px;
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #087cff,
+                    #12395d
+                );
+
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .brand h1 {
+            margin: 0;
+            color: var(--navy);
+            font-size: 24px;
+            letter-spacing: 0.3px;
+        }
+
+        .brand p {
+            margin: 5px 0 0;
+
+            color: var(--muted);
+
+            font-size: 11px;
+            font-weight: 600;
+
+            letter-spacing: 1.5px;
+        }
+
+        .report-meta {
+            text-align: right;
+        }
+
+        .report-meta .label {
+            color: var(--muted);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .report-id {
+            color: var(--navy);
+            font-size: 18px;
+            font-weight: 800;
+            margin-top: 6px;
+        }
+
+        .report-date {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        /* =====================================================
+           DOCUMENT TITLE
+        ===================================================== */
+
+        .document-title {
+            background: var(--navy);
+
+            color: white;
+
+            border-radius: 16px;
+
+            padding: 27px 30px;
+
+            margin-bottom: 18px;
+        }
+
+        .document-title h2 {
+            margin: 0;
+            font-size: 25px;
+        }
+
+        .document-title p {
+            margin: 8px 0 0;
+
+            color: #c8d6e5;
+
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .document-tag {
+            display: inline-block;
+
+            margin-top: 15px;
+
+            padding: 6px 11px;
+
+            border-radius: 20px;
+
+            background: rgba(255,255,255,0.12);
+
+            color: #e8f2ff;
+
+            font-size: 10px;
+            font-weight: 700;
+
+            letter-spacing: 0.8px;
+        }
+
+        /* =====================================================
+           SECTION
+        ===================================================== */
+
+        .section {
+            background: var(--white);
+
+            border-radius: 16px;
+
+            border: 1px solid var(--border);
+
+            padding: 25px;
+
+            margin-bottom: 18px;
+
+            box-shadow:
+                0 6px 24px rgba(15, 40, 70, 0.04);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            margin-bottom: 22px;
+        }
+
+        .section-number {
+            width: 30px;
+            height: 30px;
+
+            border-radius: 8px;
+
+            background: var(--blue-light);
+
+            color: var(--blue);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .section-header h3 {
+            margin: 0;
+
+            font-size: 18px;
+
+            color: var(--navy);
+        }
+
+        .section-header p {
+            margin: 3px 0 0;
+
+            color: var(--muted);
+
+            font-size: 11px;
+        }
+
+        /* =====================================================
+           INFORMATION GRID
+        ===================================================== */
+
+        .info-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 18px;
+        }
+
+        .info-item {
+            padding: 13px 14px;
+
+            border: 1px solid #e7edf3;
+
+            border-radius: 10px;
+
+            background: #fbfcfe;
+        }
+
+        .info-item label {
+            display: block;
+
+            color: var(--muted);
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.5px;
+
+            margin-bottom: 6px;
+        }
+
+        .info-item strong {
+            color: var(--text);
+
+            font-size: 14px;
+
+            word-break: break-word;
+        }
+
+        /* =====================================================
+           STATUS
+        ===================================================== */
+
+        .status {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            padding: 7px 12px;
+
+            border-radius: 30px;
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            letter-spacing: 0.3px;
+        }
+
+        .status::before {
+            content: "";
+
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: currentColor;
+        }
+
+        .status.detected {
+            color: var(--red);
+            background: var(--red-bg);
+        }
+
+        .status.clear {
+            color: var(--green);
+            background: var(--green-bg);
+        }
+
+        .status.review {
+            color: var(--orange);
+            background: var(--orange-bg);
+        }
+
+        /* =====================================================
+           SUMMARY CARDS
+        ===================================================== */
+
+        .summary-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 14px;
+        }
+
+        .summary-card {
+            border: 1px solid var(--border);
+
+            border-radius: 12px;
+
+            padding: 17px;
+
+            background: #fbfcfe;
+        }
+
+        .summary-card .label {
+            color: var(--muted);
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.5px;
+        }
+
+        .summary-card .value {
+            color: var(--navy);
+
+            font-size: 20px;
+
+            font-weight: 800;
+
+            margin-top: 9px;
+        }
+
+        .summary-card .small {
+            color: var(--muted);
+
+            font-size: 10px;
+
+            margin-top: 5px;
+        }
+
+        /* =====================================================
+           COST
+        ===================================================== */
+
+        .cost-layout {
+            display: grid;
+
+            grid-template-columns:
+                1fr 2fr;
+
+            gap: 18px;
+        }
+
+        .total-cost {
+            background:
+                linear-gradient(
+                    135deg,
+                    #0b1f35,
+                    #12395d
+                );
+
+            border-radius: 14px;
+
+            padding: 25px;
+
+            color: white;
+        }
+
+        .total-cost .label {
+            color: #b9cadb;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.8px;
+        }
+
+        .total-cost .amount {
+            font-size: 36px;
+
+            font-weight: 800;
+
+            margin-top: 12px;
+        }
+
+        .total-cost .note {
+            color: #c9d7e4;
+
+            font-size: 11px;
+
+            line-height: 1.6;
+
+            margin-top: 10px;
+        }
+
+        .cost-table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+
+            background: #f5f8fc;
+
+            color: #526078;
+
+            padding: 13px;
+
+            font-size: 10px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.4px;
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 13px;
+
+            border-bottom: 1px solid #edf1f5;
+
+            font-size: 13px;
+
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .part-name {
+            font-weight: 700;
+
+            color: var(--navy);
+        }
+
+        .amount-cell {
+            font-weight: 800;
+
+            white-space: nowrap;
+        }
+
+        /* =====================================================
+           INSPECTION IMAGE
+        ===================================================== */
+
+        .evidence-container {
+            background: #f7f9fc;
+
+            border: 1px solid var(--border);
+
+            border-radius: 12px;
+
+            padding: 15px;
+        }
+
+        .inspection-image {
+            display: block;
+
+            width: 100%;
+
+            max-height: 560px;
+
+            object-fit: contain;
+
+            border-radius: 9px;
+
+            background: #e9eef4;
+
+            border: 1px solid #dce3eb;
+        }
+
+        .evidence-caption {
+            margin-top: 12px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+
+            line-height: 1.6;
+        }
+
+        /* =====================================================
+           FINDINGS
+        ===================================================== */
+
+        .finding-box {
+            border-left: 4px solid var(--blue);
+
+            background: var(--blue-light);
+
+            padding: 18px;
+
+            border-radius: 8px;
+        }
+
+        .finding-box strong {
+            color: var(--navy);
+        }
+
+        .finding-box p {
+            margin: 7px 0 0;
+
+            color: #506178;
+
+            line-height: 1.7;
+
+            font-size: 13px;
+        }
+
+        /* =====================================================
+           ACCIDENT DESCRIPTION
+        ===================================================== */
+
+        .description-box {
+            background: #fbfcfe;
+
+            border: 1px solid var(--border);
+
+            border-radius: 10px;
+
+            padding: 18px;
+
+            color: #506078;
+
+            line-height: 1.8;
+
+            font-size: 13px;
+        }
+
+        /* =====================================================
+           REVIEW
+        ===================================================== */
+
+        .review-grid {
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 18px;
+        }
+
+        .review-box {
+            border: 1px solid var(--border);
+
+            border-radius: 11px;
+
+            padding: 18px;
+
+            background: #fbfcfe;
+        }
+
+        .review-box h4 {
+            margin: 0 0 12px;
+
+            color: var(--navy);
+
+            font-size: 13px;
+        }
+
+        .review-line {
+            height: 1px;
+
+            background: #dfe5ec;
+
+            margin-top: 35px;
+        }
+
+        .review-label {
+            margin-top: 8px;
+
+            color: var(--muted);
+
+            font-size: 10px;
+        }
+
+        /* =====================================================
+           DISCLAIMER
+        ===================================================== */
+
+        .disclaimer {
+            background: #fff8e9;
+
+            border: 1px solid #f0dfb8;
+
+            border-left: 5px solid #d99200;
+
+            border-radius: 10px;
+
+            padding: 18px;
+
+            margin-bottom: 18px;
+        }
+
+        .disclaimer h3 {
+            margin: 0 0 8px;
+
+            color: #8b6100;
+
+            font-size: 14px;
+        }
+
+        .disclaimer p {
+            margin: 0;
+
+            color: #6f5a29;
+
+            font-size: 11px;
+
+            line-height: 1.7;
+        }
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        .footer {
+            text-align: center;
+
+            color: #7c899b;
+
+            font-size: 10px;
+
+            line-height: 1.7;
+
+            padding: 15px 20px;
+        }
+
+        /* =====================================================
+           PRINT BUTTON
+        ===================================================== */
+
+        .print-button {
+            position: fixed;
+
+            right: 25px;
+            bottom: 25px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            padding: 13px 18px;
+
+            background: var(--blue);
+
+            color: white;
+
+            font-weight: 800;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 8px 25px rgba(8, 124, 255, 0.25);
+        }
+
+        .print-button:hover {
+            background: #006be0;
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media(max-width: 900px) {
+
+            .info-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .cost-layout {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media(max-width: 650px) {
+
+            .page {
+                margin: 10px auto;
+                padding: 0 10px 40px;
+            }
+
+            .report-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 18px;
+            }
+
+            .report-meta {
+                text-align: left;
+            }
+
+            .info-grid,
+            .summary-grid,
+            .review-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .document-title h2 {
+                font-size: 21px;
+            }
+
+            .total-cost .amount {
+                font-size: 30px;
+            }
+
+        }
+
+        /* =====================================================
+           PRINT
+        ===================================================== */
+
+        @media print {
+
+            @page {
+                size: A4;
+                margin: 12mm;
+            }
+
+            body {
+                background: white;
+            }
+
+            .page {
+                max-width: none;
+
+                margin: 0;
+
+                padding: 0;
+            }
+
+            .print-button {
+                display: none;
+            }
+
+            .section,
+            .report-header,
+            .document-title {
+                box-shadow: none;
+            }
+
+            .section {
+                break-inside: avoid;
+            }
+
+            .evidence-container {
+                break-inside: avoid;
+            }
+
+            table {
+                break-inside: auto;
+            }
+
+            tr {
+                break-inside: avoid;
+            }
+
+            .document-title {
+                background: #0b1f35 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .total-cost {
+                background: #0b1f35 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .status,
+            .section-number,
+            .disclaimer {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="page">
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="report-header">
+
+        <div class="brand">
+
+            <div class="logo">
+                IA
+            </div>
+
+            <div>
+
+                <h1>
+                    INSURE AI
+                </h1>
+
+                <p>
+                    INTELLIGENT VEHICLE INSURANCE
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="report-meta">
+
+            <div class="label">
+                INSURANCE CLAIM ASSESSMENT REPORT
+            </div>
+
+            <div class="report-id">
+
+                {{ claim.get(
+                    'claim_id',
+                    'INSURE-AI'
+                ) }}
+
+            </div>
+
+            <div class="report-date">
+
+                Generated:
+                {{ claim.get(
+                    'created_at',
+                    'N/A'
+                ) }}
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         DOCUMENT TITLE
+    ====================================================== -->
+
+    <section class="document-title">
+
+        <h2>
+            Vehicle Damage Assessment Report
+        </h2>
+
+        <p>
+            AI-assisted preliminary assessment of vehicle
+            damage based on the submitted inspection image
+            and the INSURE AI computer-vision pipeline.
+        </p>
+
+        <span class="document-tag">
+            AI-ASSISTED • PRELIMINARY ASSESSMENT
+        </span>
+
+    </section>
+
+
+    <!-- =====================================================
+         01 CLAIM INFORMATION
+    ====================================================== -->
+
+    <section class="section">
+
+        <div class="section-header">
+
+            <div class="section-number">
+                01
+            </div>
+
+            <div>
+
+                <h3>
+                    Claim & Vehicle Information
+                </h3>
+
+                <p>
+                    Identification details associated with this assessment
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="info-grid">
+
+            <div class="info-item">
+
+                <label>
+                    Claim ID
+                </label>
+
+                <strong>
+                    {{ claim.get(
+                        'claim_id',
+                        'N/A'
+                    ) }}
+                </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <label>
+                    Assessment ID
+                </label>
+
+                <strong>
+                    {{ claim.get(
+                        'assessment_id',
+                        'N/A'
+                    ) }}
+                </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <label>
+                    Claim Status
+                </label>
+
+                <strong>
+                    {{ claim.get(
+                        'status',
+                        'Under Review'
+                    ) }}
+                </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <label>
+                    Vehicle Registration
+                </label>
+
+                <strong>
+                    {{ claim.get(
+                        'vehicle_number',
+                        'N/A'
+                    ) }}
+                </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <label>
+                    Vehicle Type
+                </label>
+
+                <strong>
+                    {{ claim.get(
+                        'vehicle_type',
+                        'Unknown'
+                    )|replace('-', ' ')|title }}
+                </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <label>
+                    Accident Date
+                </label>
+
+                <strong>
+                    {{ claim.get(
+                        'accident_date',
+                        'N/A'
+                    ) }}
+                </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <label>
+                    Accident Location
+                </label>
+
+                <strong>
+                    {{ claim.get(
+                        'accident_location',
+                        'N/A'
+                    ) }}
+                </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <label>
+                    Report Generated
+                </label>
+
+                <strong>
+                    {{ claim.get(
+                        'created_at',
+                        'N/A'
+                    ) }}
+                </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <label>
+                    Assessment Type
+                </label>
+
+                <strong>
+                    AI Image Assessment
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         02 AI SUMMARY
+    ====================================================== -->
+
+    {% set detections =
+        claim.get(
+            'detections',
+            []
+        )
+    %}
+
+
+    {% set parts =
+        claim.get(
+            'part_detections',
+            []
+        )
+    %}
+
+
+    {% set has_damage =
+        detections|length > 0
+    %}
+
+
+    <section class="section">
+
+        <div class="section-header">
+
+            <div class="section-number">
+                02
+            </div>
+
+            <div>
+
+                <h3>
+                    AI Assessment Summary
+                </h3>
+
+                <p>
+                    Computer-vision findings from the submitted vehicle image
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div style="margin-bottom:18px;">
+
+            {% if has_damage %}
+
+                <span class="status detected">
+                    DAMAGE DETECTED
+                </span>
+
+            {% else %}
+
+                <span class="status clear">
+                    NO DAMAGE DETECTED
+                </span>
+
+            {% endif %}
+
+        </div>
+
+
+        <div class="summary-grid">
+
+
+            <!-- SEVERITY -->
+
+            <div class="summary-card">
+
+                <div class="label">
+                    Overall Severity
+                </div>
+
+                <div class="value">
+
+                    {{ claim.get(
+                        'severity',
+                        'N/A'
+                    ) }}
+
+                </div>
+
+                <div class="small">
+                    AI severity classification
+                </div>
+
+            </div>
+
+
+            <!-- CONFIDENCE -->
+
+            <div class="summary-card">
+
+                <div class="label">
+                    AI Confidence
+                </div>
+
+                <div class="value">
+
+                    {% if detections %}
+
+                        {% set ns = namespace(
+                            max_conf=0
+                        ) %}
+
+                        {% for detection in detections %}
+
+                            {% set conf =
+                                detection.get(
+                                    'confidence',
+                                    0
+                                )|float
+                            %}
+
+                            {% if conf > ns.max_conf %}
+
+                                {% set ns.max_conf =
+                                    conf
+                                %}
+
+                            {% endif %}
+
+                        {% endfor %}
+
+                        {{ "%.2f"|format(
+                            ns.max_conf
+                        ) }}%
+
+                    {% else %}
+
+                        N/A
+
+                    {% endif %}
+
+                </div>
+
+                <div class="small">
+                    Highest damage detection confidence
+                </div>
+
+            </div>
+
+
+            <!-- DAMAGE REGIONS -->
+
+            <div class="summary-card">
+
+                <div class="label">
+                    Damage Regions
+                </div>
+
+                <div class="value">
+                    {{ detections|length }}
+                </div>
+
+                <div class="small">
+                    AI-detected regions
+                </div>
+
+            </div>
+
+
+            <!-- COMPONENTS -->
+
+            <div class="summary-card">
+
+                <div class="label">
+                    Affected Components
+                </div>
+
+                <div class="value">
+                    {{ parts|length }}
+                </div>
+
+                <div class="small">
+                    Spatially associated parts
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         03 AI EVIDENCE
+    ====================================================== -->
+
+    {% if claim.get('annotated_image_url') %}
+
+    <section class="section">
+
+        <div class="section-header">
+
+            <div class="section-number">
+                03
+            </div>
+
+            <div>
+
+                <h3>
+                    AI Inspection Evidence
+                </h3>
+
+                <p>
+                    Annotated visual evidence produced during image analysis
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="evidence-container">
+
+            <img
+                src="{{ claim.get(
+                    'annotated_image_url'
+                ) }}"
+                class="inspection-image"
+                alt="INSURE AI vehicle damage inspection"
+            >
+
+
+            <div class="evidence-caption">
+
+                <strong>
+                    Evidence interpretation:
+                </strong>
+
+                Red bounding regions represent damage
+                detections generated by the AI damage model.
+                Component associations are derived from spatial
+                matching with the vehicle-part detection model.
+
+            </div>
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         04 DAMAGED COMPONENTS
+    ====================================================== -->
+
+    <section class="section">
+
+        <div class="section-header">
+
+            <div class="section-number">
+                04
+            </div>
+
+            <div>
+
+                <h3>
+                    Detected Affected Components
+                </h3>
+
+                <p>
+                    Vehicle components associated with detected damage
+                </p>
+
+            </div>
+
+        </div>
+
+
+        {% if parts %}
+
+        <div class="cost-table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            #
+                        </th>
+
+                        <th>
+                            Component
+                        </th>
+
+                        <th>
+                            Component Confidence
+                        </th>
+
+                        <th>
+                            Damage Association
+                        </th>
+
+                        <th>
+                            Assessment
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for part in parts %}
+
+                    <tr>
+
+                        <td>
+                            {{ loop.index }}
+                        </td>
+
+
+                        <td class="part-name">
+
+                            {{ part.get(
+                                'class_name',
+                                'Unknown'
+                            )
+                            |replace('-', ' ')
+                            |title }}
+
+                        </td>
+
+
+                        <td>
+
+                            {{
+                                "%.2f"|format(
+                                    part.get(
+                                        'confidence',
+                                        0
+                                    )|float
+                                )
+                            }}%
+
+                        </td>
+
+
+                        <td>
+
+                            {% set overlap =
+                                part.get(
+                                    'damage_part_overlap',
+                                    0
+                                )|float
+                            %}
+
+
+                            {% if overlap >= 0.50 %}
+
+                                <span class="status detected">
+                                    STRONG
+
+                                </span>
+
+                            {% elif overlap >= 0.30 %}
+
+                                <span class="status review">
+                                    MODERATE
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="status review">
+                                    REVIEW
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            Damage-associated
+                            component
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="finding-box">
+
+            <strong>
+                No specific component association established.
+            </strong>
+
+            <p>
+
+                The AI system detected a damage region but
+                could not confidently associate that region
+                with a specific vehicle component.
+
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- =====================================================
+         05 REPAIR ESTIMATE
+    ====================================================== -->
+
+    <section class="section">
+
+        <div class="section-header">
+
+            <div class="section-number">
+                05
+            </div>
+
+            <div>
+
+                <h3>
+                    Preliminary Repair Estimate
+                </h3>
+
+                <p>
+                    AI-generated component-level repair estimate
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="cost-layout">
+
+
+            <!-- TOTAL -->
+
+            <div class="total-cost">
+
+                <div class="label">
+                    Estimated Repair Cost
+                </div>
+
+                <div class="amount">
+
+                    ₹{{ "{:,.0f}".format(
+                        claim.get(
+                            'total_cost',
+                            0
+                        )|float
+                    ) }}
+
+                </div>
+
+                <div class="note">
+
+                    Preliminary estimate generated
+                    from detected vehicle damage.
+                    Final repair cost is subject to
+                    physical inspection and insurer
+                    assessment.
+
+                </div>
+
+            </div>
+
+
+            <!-- BREAKDOWN -->
+
+            <div class="cost-table-wrapper">
+
+                {% set breakdown =
+                    claim.get(
+                        'cost_breakdown',
+                        []
+                    )
+                %}
+
+
+                {% if breakdown %}
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Component
+                            </th>
+
+                            <th>
+                                Category
+                            </th>
+
+                            <th>
+                                Severity
+                            </th>
+
+                            <th>
+                                Estimated Amount
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                    {% for item in breakdown %}
+
+                        <tr>
+
+                            <td class="part-name">
+
+                                {{ item.get(
+                                    'part',
+                                    'N/A'
+                                )
+                                |replace('-', ' ')
+                                |title }}
+
+                            </td>
+
+
+                            <td>
+
+                                {{ item.get(
+                                    'category',
+                                    'Repair'
+                                ) }}
+
+                            </td>
+
+
+                            <td>
+
+                                {{ item.get(
+                                    'severity',
+                                    'N/A'
+                                ) }}
+
+                            </td>
+
+
+                            <td class="amount-cell">
+
+                                ₹{{ "{:,.0f}".format(
+                                    item.get(
+                                        'estimated_cost',
+                                        0
+                                    )|float
+                                ) }}
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+                {% else %}
+
+                <div class="finding-box">
+
+                    <strong>
+                        Detailed estimate unavailable.
+                    </strong>
+
+                    <p>
+                        Component-level repair pricing was
+                        not available for this assessment.
+                    </p>
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         06 ACCIDENT DESCRIPTION
+    ====================================================== -->
+
+    {% if claim.get('accident_description') %}
+
+    <section class="section">
+
+        <div class="section-header">
+
+            <div class="section-number">
+                06
+            </div>
+
+            <div>
+
+                <h3>
+                    Accident / Incident Description
+                </h3>
+
+                <p>
+                    Statement provided during claim submission
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="description-box">
+
+            {{ claim.get(
+                'accident_description'
+            ) }}
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         AI FINDINGS
+    ====================================================== -->
+
+    <section class="section">
+
+        <div class="section-header">
+
+            <div class="section-number">
+                07
+            </div>
+
+            <div>
+
+                <h3>
+                    AI Assessment Findings
+                </h3>
+
+                <p>
+                    Preliminary interpretation of the computer-vision results
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="finding-box">
+
+            {% if has_damage %}
+
+                <strong>
+                    Damage indicators were identified in the
+                    submitted vehicle image.
+                </strong>
+
+                <p>
+
+                    The INSURE AI pipeline identified
+                    {{ detections|length }}
+                    damage region(s).
+
+                    {% if parts %}
+
+                        The system additionally associated
+                        the detected damage with
+                        {{ parts|length }}
+                        vehicle component(s).
+
+                    {% endif %}
+
+                    The resulting severity and repair estimate
+                    are intended to support, rather than replace,
+                    the insurer's review process.
+
+                </p>
+
+            {% else %}
+
+                <strong>
+                    No damage region was identified by the AI system.
+                </strong>
+
+                <p>
+
+                    The submitted image did not produce a
+                    qualifying damage detection under the
+                    current AI assessment pipeline.
+
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         REVIEW / DECISION
+    ====================================================== -->
+
+    <section class="section">
+
+        <div class="section-header">
+
+            <div class="section-number">
+                08
+            </div>
+
+            <div>
+
+                <h3>
+                    Insurance Officer Review
+                </h3>
+
+                <p>
+                    Final decision and authorization section
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="review-grid">
+
+
+            <div class="review-box">
+
+                <h4>
+                    Current Claim Status
+                </h4>
+
+                <span class="status review">
+
+                    {{ claim.get(
+                        'status',
+                        'Under Review'
+                    ) }}
+
+                </span>
+
+
+                {% if claim.get('remarks') %}
+
+                    <div style="
+                        margin-top:18px;
+                        color:#56667a;
+                        font-size:12px;
+                        line-height:1.7;
+                    ">
+
+                        <strong>
+                            Reviewer Remarks
+                        </strong>
+
+                        <br><br>
+
+                        {{ claim.get('remarks') }}
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="review-box">
+
+                <h4>
+                    Authorized Officer
+                </h4>
+
+                <div class="review-line"></div>
+
+                <div class="review-label">
+                    Officer Name / Signature
+                </div>
+
+
+                <div class="review-line"></div>
+
+                <div class="review-label">
+                    Date
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         DISCLAIMER
+    ====================================================== -->
+
+    <section class="disclaimer">
+
+        <h3>
+            Important Assessment Notice
+        </h3>
+
+        <p>
+
+            This document is an AI-assisted preliminary
+            vehicle damage assessment generated from the
+            submitted image and information provided during
+            claim submission.
+
+            It is intended to support insurance claim
+            triage, review and documentation.
+
+            The AI-generated damage classification,
+            component association, severity and repair
+            estimate must be independently reviewed by an
+            authorized insurance professional before any
+            claim approval, rejection or settlement.
+
+            This report does not constitute a final insurance
+            valuation, settlement decision or legally binding
+            determination.
+
+        </p>
+
+    </section>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="footer">
+
+        <strong>
+            INSURE AI
+        </strong>
+
+        <br>
+
+        Intelligent Vehicle Damage Assessment &
+        Insurance Claim Automation
+
+        <br><br>
+
+        AI-Assisted Insurance Assessment Report
+        • Generated {{ claim.get(
+            'created_at',
+            'N/A'
+        ) }}
+
+    </footer>
+
+
+</div>
+
+
+<!-- =========================================================
+     PRINT BUTTON
+========================================================= -->
+
+<button
+    class="print-button"
+    onclick="window.print()"
+>
+    Print / Save PDF
+</button>
+
+
+</body>
+
+</html>
