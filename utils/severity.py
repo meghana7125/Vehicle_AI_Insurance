@@ -1,11 +1,4 @@
 def calculate_severity(damage_detections):
-    """
-    Calculate a presentation-friendly severity level
-    from damage model confidence.
-
-    This is an AI-assisted estimate, not a professional
-    insurance damage assessment.
-    """
 
     if not damage_detections:
         return "No Damage"
@@ -16,38 +9,34 @@ def calculate_severity(damage_detections):
 
         try:
             confidence = float(
-                detection.get(
-                    "confidence",
-                    0
-                )
+                detection.get("confidence", 0)
             )
 
-            confidences.append(
-                confidence
-            )
+            if 0 < confidence <= 1:
+                confidence *= 100
 
-        except (
-            ValueError,
-            TypeError
-        ):
-            pass
+            confidences.append(confidence)
+
+        except (ValueError, TypeError):
+            continue
 
     if not confidences:
         return "Minor"
 
-    highest = max(
-        confidences
-    )
+    highest = max(confidences)
+    count = len(damage_detections)
 
-    # Multiple damage regions increase severity.
-    damage_count = len(
-        damage_detections
-    )
-
-    if highest >= 85 or damage_count >= 4:
+    # Multiple independent damage regions
+    if count >= 4 and highest >= 55:
         return "Severe"
 
-    if highest >= 65 or damage_count >= 2:
+    if count >= 3 and highest >= 55:
+        return "High"
+
+    if count >= 2 and highest >= 45:
+        return "Moderate"
+
+    if highest >= 75:
         return "Moderate"
 
     return "Minor"
